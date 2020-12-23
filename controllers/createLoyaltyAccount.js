@@ -5,5 +5,5 @@ const router = express.Router();
 module.exports = router;
 
 router.get("/", (req, res) => {
-  res.send("loyalty stuffzzz");
+  res.send("loyalty stuff");
 });
