@@ -25,7 +25,7 @@ app.use("/create-loyalty-account", createLoyaltyAccount);
 
 app.get("/", (req, res, next) => {
   try {
-    res.send("server exists");
+    res.send("node env value: " + process.env.NODE_ENV);
   } catch (err) {
     next(err);
   }
