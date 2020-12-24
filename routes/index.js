@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-router.use("/search-loyalty-account", require("./searchLoyaltyAccount"));
+const searchLoyaltyAccount = require("../controllers/loyaltyController");
+
+router.post("/search-loyalty-account", searchLoyaltyAccount);
 
 module.exports = router;
