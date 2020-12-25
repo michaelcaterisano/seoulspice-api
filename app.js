@@ -37,6 +37,7 @@ app.use((err, req, res, next) => {
   if (!res.status) {
     res.status(500).send("server error");
   } else {
+    console.log("error handler");
     return res.send();
   }
 });
