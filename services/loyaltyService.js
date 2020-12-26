@@ -1,6 +1,6 @@
 const client = require("./squareClient");
 
-const search = async (type, value) => {
+const searchLoyaltyAccounts = async (type, value) => {
   try {
     const result = await client.loyaltyApi.searchLoyaltyAccounts({
       query: {
@@ -18,4 +18,4 @@ const search = async (type, value) => {
   }
 };
 
-module.exports = { search };
+module.exports = { searchLoyaltyAccounts };

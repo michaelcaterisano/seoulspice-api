@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
+var cors = require("cors");
 
 const router = require("./routes/index");
 const app = express();
@@ -14,6 +15,8 @@ if (process.env.NODE_ENV === "development") {
   // morgan logging stuffz
   app.use(logger("dev"));
 }
+
+app.use(cors());
 
 // set cookie stuff
 // set uuid
