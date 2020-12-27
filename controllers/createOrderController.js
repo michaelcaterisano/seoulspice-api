@@ -1,11 +1,11 @@
 const orderService = require("../services/orderService");
+const OrderBuilder = require("../models/OrderBuilder");
 
 const createOrder = async (req, res, next) => {
-  console.log("create order called");
   try {
-    const { body } = req;
-    // const result = await orderService.createOrder();
-    return res.send(body);
+    const data = req.body;
+    const order = new OrderBuilder(data).getOrder();
+    return res.send(order);
   } catch (error) {
     next(error);
   }
