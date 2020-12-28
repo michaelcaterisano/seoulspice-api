@@ -8,7 +8,7 @@ const createOrder = async (order) => {
     return result;
   } catch (error) {
     throw new Error(
-      "Orders API Error: Failed to create order. Message: " + error.message
+      `Orders API Error: Failed to create order. Message: ${error.message}`
     );
   }
 };

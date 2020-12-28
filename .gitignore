@@ -2,6 +2,7 @@ node_modules/
 ecosystem.config.js
 .env
 ignore.*
+access.log
 
 
 

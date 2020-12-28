@@ -1,22 +1,19 @@
 const loyaltyService = require("../services/loyaltyService");
+const asyncHandler = require("express-async-handler");
 const chalk = require("chalk");
 
-const getLoyaltyRewards = async (req, res, next) => {
+const addLoyaltyAccount = asyncHandler(async (req, res) => {
   const { phoneNumber } = req.body;
-  try {
-    // look up loyalty account
-    let loyaltyAccount = await loyaltyService.getAccount(phoneNumber);
-    // if account found, look up available rewards
-    if (loyaltyAccount) {
-      const rewards = await loyaltyService.getRewards(loyaltyAccount);
-    } else {
-      // if no account is found, create new loyalty account
-      loyaltyAccount = await loyaltyService.createAccount(phoneNumber);
-    }
-    // return loyaltyAccountId, rewardTierId, reward
-  } catch (error) {
-    next(error);
+  const loyaltyAccount = await loyaltyService.getAccount(phoneNumber);
+  if (loyaltyAccount) {
+    const reward = await loyaltyService.getReward(loyaltyAccount);
+    res.json({ accountFound: true, reward });
+  } else {
+    await loyaltyService.createAccount(phoneNumber);
+    res.json({
+      accountFound: false,
+    });
   }
-};
+});
 
-module.exports = getLoyaltyRewards;
+module.exports = addLoyaltyAccount;
