@@ -1,10 +1,12 @@
+const { v4: uuidv4 } = require("uuid");
 const OrderItem = require("./OrderItem");
 
 class OrderBuilder {
   constructor(data) {
     this._data = data;
     this._order = {
-      locationId: null,
+      idempotencyKey: uuidv4(),
+      locationId: this._data.locationId,
       lineItems: [],
       taxes: [],
       serviceCharges: [],
@@ -49,12 +51,12 @@ class OrderBuilder {
   }
 
   _buildTaxes() {
-    this._order.taxes.push = {
+    this._order.taxes.push({
       name: "Sales Tax",
       scope: "ORDER",
       type: "ADDITIVE",
       percentage: `${this._data.taxRate}`,
-    };
+    });
   }
 
   _buildServiceCharges() {
@@ -62,7 +64,7 @@ class OrderBuilder {
       name: "Tip",
       amountMoney: {
         amount: this._data.tip ? this._data.tip : 0,
-        curency: "USD",
+        currency: "USD",
       },
       calculationPhase: "TOTAL_PHASE",
       taxable: false,

@@ -11,13 +11,15 @@ class OrderItem {
 
   _buildItem() {
     this._item = {
-      quantity: this._data.qty,
+      quantity: this._data.qty.toString(),
       basePriceMoney: {
         amount: this._data.price,
-        curency: "USD",
+        currency: "USD",
       },
-      name: `${this._data.signature} ${this._data.name}`,
-      note: this._data.notes ? `${this._data.notes.join(", ")}.` : "",
+      name: `${this._data.signature ? this._data.signature + " " : ""}${
+        this._data.name
+      }`,
+      note: this._data.notes.lenght ? `${this._data.notes.join(", ")}` : "",
     };
 
     if (this._data.type === "entree") {
@@ -26,20 +28,21 @@ class OrderItem {
   }
 
   _buildModifiers() {
+    this._item.modifiers = [];
     this._data.options.forEach((option) => {
-      this._item["modifiers"] = {
+      this._item.modifiers.push({
         basePriceMoney: {
           amount: 0, // because price is already included in total
           currency: "USD",
         },
         name: this._getModifierName(option),
-      };
+      });
     });
   }
 
   _getModifierName(option) {
     const choiceNames = option.choices.map((choice) => {
-      return choice.qty ? `${choice.name} + (${choice.qty})` : choice.name;
+      return choice.qty ? `${choice.name} (${choice.qty})` : choice.name;
     });
     return `${option.cartLabel}: ${choiceNames.join(", ")}.`;
   }

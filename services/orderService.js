@@ -1,11 +1,12 @@
 const client = require("./squareClient");
+const chalk = require("chalk");
 
 const createOrder = async (order) => {
   try {
-    const result = await client.ordersApi.createorder();
-    return { success: true, body: result };
+    const result = await client.ordersApi.createOrder(order);
+    return result;
   } catch (error) {
-    return { success: false, body: error };
+    throw new Error(chalk.red(JSON.stringify(error, null, 2)));
   }
 };
 
