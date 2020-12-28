@@ -19,7 +19,7 @@ class OrderItem {
       name: `${this._data.signature ? this._data.signature + " " : ""}${
         this._data.name
       }`,
-      note: this._data.notes.lenght ? `${this._data.notes.join(", ")}` : "",
+      note: this._data.notes.length ? `${this._data.notes.join(", ")}` : "",
     };
 
     if (this._data.type === "entree") {

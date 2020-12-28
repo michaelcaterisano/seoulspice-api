@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 var cors = require("cors");
@@ -10,6 +11,11 @@ const port = process.env.PORT || 3000;
 
 // if (!module.parent) { <--- for testing
 // }
+app.use(
+  logger("common", {
+    stream: fs.createWriteStream("./access.log", { flags: "a" }),
+  })
+);
 
 if (process.env.NODE_ENV === "development") {
   // morgan logging stuffz
