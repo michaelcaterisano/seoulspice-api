@@ -1,17 +1,18 @@
 const orderService = require("../services/orderService");
 const OrderBuilder = require("../models/OrderBuilder");
-const chalk = require("chalk");
+const asyncHandler = require("express-async-handler");
 
-const createOrder = async (req, res, next) => {
-  try {
-    const data = req.body;
-    const order = new OrderBuilder(data).getOrder();
-    const response = await orderService.createOrder(order, next);
-    const { id, totalMoney } = response.result.order;
-    return res.send({ orderId: id, orderTotal: totalMoney.amount });
-  } catch (error) {
-    next(error);
-  }
-};
+const createOrder = asyncHandler(async (req, res, next) => {
+  const data = req.body;
+  const order = new OrderBuilder(data).getOrder();
+  const response = await orderService.createOrder(order);
+  const { id, totalMoney } = response.result.order;
+  return res.json({
+    success: true,
+    orderId: id,
+    orderTotal: totalMoney.amount,
+    order: response.result.order,
+  });
+});
 
 module.exports = createOrder;

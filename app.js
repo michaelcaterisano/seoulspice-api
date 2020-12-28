@@ -40,13 +40,13 @@ app.get("*", (req, res) => {
 });
 
 // error catching
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  console.log(err.message);
+app.use((error, req, res, next) => {
+  console.error(error.stack);
+  console.log(error.message);
   if (!res.status) {
-    res.status(500).send("server error");
+    res.status(500).json({ success: false, message: error.message });
   } else {
-    return res.send(err);
+    return res.json({ success: false, error: error.message });
   }
 });
 

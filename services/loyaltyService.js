@@ -1,21 +1,53 @@
 const client = require("./squareClient");
+const { loyaltyApi } = client;
+const asyncHandler = require("express-async-handler");
 
-const searchLoyaltyAccounts = async (type, value) => {
+// const addLoyaltyPoint = async (
+//   phoneNumber,
+//   orderId,
+//   locationId,
+//   program
+// ) => {};
+
+const getAccount = async (phoneNumber) => {
   try {
-    const result = await client.loyaltyApi.searchLoyaltyAccounts({
+    const {
+      result: { loyaltyAccounts },
+    } = await loyaltyApi.searchLoyaltyAccounts({
       query: {
         mappings: [
           {
-            type,
-            value,
+            type: "PHONE",
+            value: phoneNumber,
           },
         ],
       },
     });
-    return { success: true, body: result };
+    return loyaltyAccounts ? loyaltyAccounts[0] : null;
   } catch (error) {
-    return { success: false, body: error };
+    throw new Error(
+      "Loyalty API Error: Failed to get account. Message: " + error.message
+    );
   }
 };
 
-module.exports = { searchLoyaltyAccounts };
+const getLoyaltyProgram = async () => {
+  const {
+    result: { programs },
+  } = await loyaltyApi.listLoyaltyPrograms();
+  return programs && programs.length > 0 ? programs[0] : null; // there is only one loyalty program
+};
+
+getRewards = async (loyaltyAccount) => {
+  const program = getLoyaltyProgram();
+  if (program) {
+    const reward = program.rewardTiers[0]; // there is only one reward in this program
+    const {
+      id,
+      name,
+      definition: { percentageDiscount },
+    } = reward;
+  }
+};
+
+module.exports = { getAccount, getLoyaltyProgram };
