@@ -13,7 +13,7 @@ const getLoyaltyRewards = async (req, res, next) => {
       // if no account is found, create new loyalty account
       loyaltyAccount = await loyaltyService.createAccount(phoneNumber);
     }
-    // return reward
+    // return loyaltyAccountId, rewardTierId, reward
   } catch (error) {
     next(error);
   }
