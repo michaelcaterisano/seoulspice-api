@@ -1,6 +1,7 @@
 node_modules/
 ecosystem.config.js
 .env
+ignore.*
 
 
 
