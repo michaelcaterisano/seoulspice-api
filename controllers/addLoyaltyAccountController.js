@@ -6,8 +6,8 @@ const addLoyaltyAccount = asyncHandler(async (req, res) => {
   const { phoneNumber } = req.body;
   const loyaltyAccount = await loyaltyService.getAccount(phoneNumber);
   if (loyaltyAccount) {
-    const reward = await loyaltyService.getReward(loyaltyAccount);
-    res.json({ accountFound: true, reward });
+    const availableReward = await loyaltyService.getReward(loyaltyAccount);
+    res.json({ accountFound: true, availableReward: availableReward });
   } else {
     await loyaltyService.createAccount(phoneNumber);
     res.json({

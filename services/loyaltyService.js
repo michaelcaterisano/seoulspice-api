@@ -74,15 +74,51 @@ const getLoyaltyProgram = async () => {
 const getReward = async (loyaltyAccount) => {
   const program = await getLoyaltyProgram();
   const {
+    id,
     points,
     name,
     definition: { percentageDiscount },
   } = program.rewardTiers[0]; // there is only one reward in this program
-  if (loyaltyAccount.balance > points) {
-    return { hasReward: true, name, percentageDiscount };
+  if (loyaltyAccount.balance >= points) {
+    return { hasReward: true, name, percentageDiscount, rewardTierId: id };
   } else {
-    return { hasReward: false };
+    return false;
   }
 };
 
-module.exports = { getAccount, getReward, createAccount };
+const createLoyaltyReward = async (
+  loyaltyAccountId,
+  orderId,
+  locationId,
+  rewardTierId
+) => {
+  try {
+    const {
+      result: { reward },
+    } = await loyaltyApi.createLoyaltyReward({
+      reward: {
+        loyaltyAccountId,
+        rewardTierId,
+        orderId,
+      },
+      idempotencyKey: uuidv4(),
+    });
+
+    console.log(chalk.yellow(JSON.stringify(reward, null, 2)));
+
+    // redeem reward
+    // const response = loyaltyApi.redeemLoyaltyReward(reward.id, {
+    //   idempotencyKey: uuidv4(),
+    //   locationId,
+    // });
+    // console.log(JSON.stringify(response, null, 2));
+    // return response;
+    return { reward };
+  } catch (error) {
+    throw new Error(
+      `Loyalty API Error. Unable to redeem loyalty reward. Message: ${error.message}`
+    );
+  }
+};
+
+module.exports = { getAccount, getReward, createAccount, createLoyaltyReward };
