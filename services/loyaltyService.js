@@ -116,7 +116,7 @@ const createLoyaltyReward = async (
     return { reward };
   } catch (error) {
     throw new Error(
-      `Loyalty API Error. Unable to redeem loyalty reward. Message: ${error.message}`
+      `Loyalty API Error. Unable to create loyalty reward. Message: ${error.message}`
     );
   }
 };

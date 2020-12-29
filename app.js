@@ -46,7 +46,7 @@ app.use((error, req, res, next) => {
   if (!res.status) {
     res.status(500).json({ success: false, message: error.message });
   } else {
-    return res.json({ success: false, error: error.message });
+    return res.json({ success: false, message: error.message });
   }
 });
 
