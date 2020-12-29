@@ -7,7 +7,7 @@ const createOrder = require("../controllers/createOrderController");
 const createLoyaltyReward = require("../controllers/createLoyaltyRewardController");
 const createPayment = require("../controllers/createPaymentController");
 
-router.options("/", (req, res) => {
+router.options("/*", (req, res) => {
   res.status(204).send("ok");
 });
 
