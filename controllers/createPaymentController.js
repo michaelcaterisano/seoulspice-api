@@ -4,11 +4,12 @@ const loyaltyService = require("../services/loyaltyService");
 const asyncHandler = require("express-async-handler");
 
 const createPaymentController = asyncHandler(async (req, res) => {
-  const { sourceId, amount, orderId, phoneNumber, locationId } = req.body;
+  const { sourceId, amount, orderId, phoneNumber, locationId, tip } = req.body;
   const payment = await paymentsService.createPayment({
     amount,
     sourceId,
     orderId,
+    tip,
   });
 
   const {

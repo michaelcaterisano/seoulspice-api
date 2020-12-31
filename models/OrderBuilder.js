@@ -9,7 +9,7 @@ class OrderBuilder {
       locationId: this._data.locationId,
       lineItems: [],
       taxes: [],
-      serviceCharges: [],
+      // serviceCharges: [],
       fulfillments: [],
     };
   }
@@ -23,7 +23,7 @@ class OrderBuilder {
     this._buildOrderItems();
     this._buildFulfillments();
     this._buildTaxes();
-    this._buildServiceCharges();
+    // this._buildServiceCharges();
   }
 
   _buildOrderItems() {
@@ -59,17 +59,17 @@ class OrderBuilder {
     });
   }
 
-  _buildServiceCharges() {
-    this._order.serviceCharges.push({
-      name: "Tip",
-      amountMoney: {
-        amount: this._data.tip ? this._data.tip : 0,
-        currency: "USD",
-      },
-      calculationPhase: "TOTAL_PHASE",
-      taxable: false,
-    });
-  }
+  // _buildServiceCharges() {
+  //   this._order.serviceCharges.push({
+  //     name: "Tip",
+  //     amountMoney: {
+  //       amount: this._data.tip ? this._data.tip : 0,
+  //       currency: "USD",
+  //     },
+  //     calculationPhase: "TOTAL_PHASE",
+  //     taxable: false,
+  //   });
+  // }
 }
 
 module.exports = OrderBuilder;

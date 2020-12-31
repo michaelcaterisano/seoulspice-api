@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const chalk = require("chalk");
 
-const createPayment = async ({ amount, sourceId, orderId }) => {
+const createPayment = async ({ amount, sourceId, orderId, tip }) => {
   try {
     const {
       result: { payment },
@@ -13,6 +13,10 @@ const createPayment = async ({ amount, sourceId, orderId }) => {
       idempotencyKey: uuidv4(),
       amountMoney: {
         amount,
+        currency: "USD",
+      },
+      tipMoney: {
+        amount: tip,
         currency: "USD",
       },
       orderId,

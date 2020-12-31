@@ -15,6 +15,22 @@ const createOrder = async (orderInfo) => {
   }
 };
 
+const getOrderSummary = async (orderId) => {
+  try {
+    const {
+      totalMoney,
+      totalTaxMoney,
+      totalDiscountMoney,
+      totalTipMoney,
+    } = await retrieveOrder(orderId);
+    return { totalMoney, totalTaxMoney, totalDiscountMoney, totalTipMoney };
+  } catch (error) {
+    throw new Error(
+      `Orders API Error: Failed to get order summary. Errors: ${error.message}`
+    );
+  }
+};
+
 const retrieveOrder = async (orderId) => {
   try {
     const {
@@ -23,11 +39,9 @@ const retrieveOrder = async (orderId) => {
     return order;
   } catch (error) {
     throw new Error(
-      `Orders API Error: Failed to retrieve order. Errors: ${JSON.stringify(
-        error.result.errors
-      )}`
+      `Orders API Error: Failed to retrieve order. Errors: ${error.result.errors}`
     );
   }
 };
 
-module.exports = { createOrder, retrieveOrder };
+module.exports = { createOrder, getOrderSummary, retrieveOrder };

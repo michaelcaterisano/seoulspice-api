@@ -6,6 +6,7 @@ const getLoyaltyAccountController = require("../controllers/getLoyaltyAccountCon
 const createOrderController = require("../controllers/createOrderController");
 const createLoyaltyRewardController = require("../controllers/createLoyaltyRewardController");
 const createPaymentController = require("../controllers/createPaymentController");
+const getOrderSummaryController = require("../controllers/getOrderSummaryController");
 
 // router.options("/*", (req, res) => {
 //   res.status(204).send("ok");
@@ -16,13 +17,9 @@ router.get("/", (req, res) => {
 });
 
 router.post("/create-order", createOrderController);
-
 router.post("/get-loyalty-account", getLoyaltyAccountController);
 router.post("/create-loyalty-reward", createLoyaltyRewardController);
-// router.post("/redeem-loyalty-reward", redeemLoyaltyReward);
-// router.post("delete-loyalty-reward", deleteLoyaltyReward);
-// router.post("accumulate-loyalty-point");
-
 router.post("/create-payment", createPaymentController);
+router.get("/order-summary", getOrderSummaryController);
 
 module.exports = router;
