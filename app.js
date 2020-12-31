@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000;
 
 // if (!module.parent) { <--- for testing
 // }
+
 app.use(
   logger("common", {
     stream: fs.createWriteStream("./access.log", { flags: "a" }),

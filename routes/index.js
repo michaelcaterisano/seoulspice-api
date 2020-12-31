@@ -2,26 +2,27 @@ const express = require("express");
 const router = express.Router();
 
 // const getLoyaltyProgram = require("../controllers/getLoyaltyProgramController");
-const addLoyaltyAccount = require("../controllers/addLoyaltyAccountController");
-const createOrder = require("../controllers/createOrderController");
-const createLoyaltyReward = require("../controllers/createLoyaltyRewardController");
-const createPayment = require("../controllers/createPaymentController");
+const getLoyaltyAccountController = require("../controllers/getLoyaltyAccountController");
+const createOrderController = require("../controllers/createOrderController");
+const createLoyaltyRewardController = require("../controllers/createLoyaltyRewardController");
+const createPaymentController = require("../controllers/createPaymentController");
 
-router.options("/*", (req, res) => {
-  res.status(204).send("ok");
-});
+// router.options("/*", (req, res) => {
+//   res.status(204).send("ok");
+// });
 
 router.get("/", (req, res) => {
   res.send(`${process.env.NODE_ENV} API is running`);
 });
 
-router.post("/create-order", createOrder);
+router.post("/create-order", createOrderController);
 
-router.post("/add-loyalty-account", addLoyaltyAccount);
-
-router.post("/create-loyalty-reward", createLoyaltyReward);
-
-router.post("/create-payment", createPayment);
-
+router.post("/get-loyalty-account", getLoyaltyAccountController);
+router.post("/create-loyalty-reward", createLoyaltyRewardController);
+// router.post("/redeem-loyalty-reward", redeemLoyaltyReward);
+// router.post("delete-loyalty-reward", deleteLoyaltyReward);
 // router.post("accumulate-loyalty-point");
+
+router.post("/create-payment", createPaymentController);
+
 module.exports = router;
