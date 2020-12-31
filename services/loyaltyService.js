@@ -4,17 +4,21 @@ const { v4: uuidv4 } = require("uuid");
 const asyncHandler = require("express-async-handler");
 const chalk = require("chalk");
 
-const accumulateLoyaltyPoint = async (phoneNumber, orderId, locationId) => {
+const accumulateLoyaltyPoints = async ({
+  phoneNumber,
+  orderId,
+  locationId,
+}) => {
   try {
-    const loyaltyAccount = await getLoyaltyAccount(phoneNumber);
+    let loyaltyAccount = await getLoyaltyAccount(phoneNumber);
     if (!loyaltyAccount) {
-      return false;
+      loyaltyAccount = await createAccount(phoneNumber);
     }
-    const response = await loyaltyApi.accumulateLoyaltyPoint(
+    const response = await loyaltyApi.accumulateLoyaltyPoints(
       loyaltyAccount.id,
       {
         accumulatePoints: {
-          points: 1,
+          // points: 1,
           orderId,
         },
         idempotencyKey: uuidv4(),
@@ -23,8 +27,11 @@ const accumulateLoyaltyPoint = async (phoneNumber, orderId, locationId) => {
     );
     return response;
   } catch (error) {
+    console.log(chalk.yellow(JSON.stringify(error, null, 2)));
     throw new Error(
-      `Loyalty API Error. Faild to accumulate loyalty point. Message: ${error.message}`
+      `Loyalty API Error. Faild to accumulate loyalty point. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
@@ -49,7 +56,9 @@ const createAccount = async (phoneNumber) => {
     return loyaltyAccount;
   } catch (error) {
     throw new Error(
-      `Loyalty API Error. Failed to create loyalty account. Message: ${error.message}`
+      `Loyalty API Error. Failed to create loyalty account. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
@@ -71,7 +80,9 @@ const createLoyaltyReward = async (phoneNumber, orderId) => {
     return reward;
   } catch (error) {
     throw new Error(
-      `Loyalty API Error. Unable to create loyalty reward. Message: ${error.message}`
+      `Loyalty API Error. Unable to create loyalty reward. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
@@ -93,7 +104,9 @@ const getLoyaltyAccount = async (phoneNumber) => {
     return loyaltyAccounts ? loyaltyAccounts[0] : null;
   } catch (error) {
     throw new Error(
-      `Loyalty API Error: Failed to get account. Message: ${error.message}`
+      `Loyalty API Error: Failed to get account. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
@@ -106,7 +119,9 @@ const getLoyaltyProgram = async () => {
     return programs && programs.length > 0 ? programs[0] : null; // there is only one loyalty program
   } catch (error) {
     throw new Error(
-      `Loyalty API Error: Failed to get loyalty program. Message: ${error.message}`
+      `Loyalty API Error: Failed to get loyalty program. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
@@ -140,7 +155,9 @@ const getAccountRewards = async (phoneNumber) => {
       };
     }
   } catch (error) {
-    `Loyalty API Error. Could not get rewards info. Message: ${error.message}`;
+    `Loyalty API Error. Could not get rewards info. Errors: ${JSON.stringify(
+      error.result.errors
+    )}`;
   }
 };
 
@@ -155,7 +172,9 @@ const getRewardTierInfo = async () => {
     } = program.rewardTiers[0]; // there is only one reward in this program
     return { rewardTierId: id, points, name, percentageDiscount };
   } catch (error) {
-    `Loyalty API Error. Could not get reward tier id. Message: ${error.message}`;
+    `Loyalty API Error. Could not get reward tier id. Errors: ${JSON.stringify(
+      error.result.errors
+    )}`;
   }
 };
 
@@ -169,7 +188,9 @@ const redeemLoyaltyReward = async (rewardId, locationId) => {
     return result;
   } catch (error) {
     throw new Error(
-      `Loyalty api Error. Unable to redeem loyalty reward. Message: ${error.message}`
+      `Loyalty api Error. Unable to redeem loyalty reward. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
@@ -179,7 +200,9 @@ const deleteLoyaltyReward = async (rewardId) => {
     const { result } = await loyaltyApi.deleteLoyaltyReward(rewardId);
   } catch (error) {
     throw new Error(
-      `Loyalty API Error. Unable to delete loyalty reward. Message: ${error.message}`
+      `Loyalty API Error. Unable to delete loyalty reward. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
@@ -190,5 +213,5 @@ module.exports = {
   createAccount,
   createLoyaltyReward,
   redeemLoyaltyReward,
-  accumulateLoyaltyPoint,
+  accumulateLoyaltyPoints,
 };

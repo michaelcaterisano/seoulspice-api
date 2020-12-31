@@ -20,7 +20,9 @@ const createPayment = async ({ amount, sourceId, orderId }) => {
     return payment;
   } catch (error) {
     throw new Error(
-      `Payments API Error: Failed to create payment. Message: ${error.message}`
+      `Payments API Error: Failed to create payment. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };

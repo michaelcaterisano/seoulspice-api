@@ -4,34 +4,30 @@ const loyaltyService = require("../services/loyaltyService");
 const asyncHandler = require("express-async-handler");
 
 const createPaymentController = asyncHandler(async (req, res) => {
-  const { sourceId, amount, orderId, phoneNumber } = req.body;
+  const { sourceId, amount, orderId, phoneNumber, locationId } = req.body;
   const payment = await paymentsService.createPayment({
     amount,
     sourceId,
     orderId,
   });
 
-  // const { rewards, locationId } = await orderService.retrieveOrder(orderId);
-  // if (rewards) {
-  //   const rewardId = rewards[0].id;
-  //   console.log(rewardId);
-  //   const redeemedReward = await loyaltyService.redeemLoyaltyReward(
-  //     rewardId,
-  //     locationId
-  //   );
-  // }
-
-  // accumulate award point
-  // const response = await loyaltyService.accumulateLoyaltyPoint(
-  //   phoneNumber,
-  //   orderId,
-  //   locationId
-  // );
+  const {
+    result: {
+      event: {
+        accumulatePoints: { points },
+      },
+    },
+  } = await loyaltyService.accumulateLoyaltyPoints({
+    phoneNumber,
+    orderId,
+    locationId,
+  });
 
   return res.json({
     success: true,
     status: payment.status,
-    payment,
+    amount: payment.amountMoney.amount,
+    accumulatedLoyaltyPoints: points,
   });
 });
 

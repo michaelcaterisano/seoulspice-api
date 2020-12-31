@@ -23,7 +23,9 @@ const retrieveOrder = async (orderId) => {
     return order;
   } catch (error) {
     throw new Error(
-      `Orders API Error: Failed to retrieve order. Message: ${error.message}`
+      `Orders API Error: Failed to retrieve order. Errors: ${JSON.stringify(
+        error.result.errors
+      )}`
     );
   }
 };
