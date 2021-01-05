@@ -1,7 +1,10 @@
 const { Client, Environment } = require("square");
 
 const client = new Client({
-  environment: Environment.Sandbox,
+  environment:
+    process.env.NODE_ENV === "development"
+      ? Environment.Sandbox
+      : Environment.Production,
   accessToken:
     process.env.NODE_ENV === "development"
       ? process.env.SQUARE_SANDBOX_ACCESS_TOKEN
