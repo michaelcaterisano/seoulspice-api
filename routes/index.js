@@ -18,16 +18,25 @@ const whitelist = [
   "https://seoulspice-pickup.netlify.app",
 ];
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
+let corsOptions;
+if (process.env.NODE_ENV === "local") {
+  corsOptions = {
+    origin: "*",
+    optionsSucessStatus: 200,
+  };
+} else {
+  corsOptions = {
+    origin: (origin, callback) => {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  };
+}
 
+// ROUTES
 router.options("*", cors());
 
 router.get("/health", (req, res) => {
@@ -36,18 +45,23 @@ router.get("/health", (req, res) => {
 });
 
 router.post("/create-order", cors(corsOptions), createOrderController);
+
 router.post(
   "/get-loyalty-account",
   cors(corsOptions),
   getLoyaltyAccountController
 );
+
 router.post(
   "/create-loyalty-reward",
   cors(corsOptions),
   createLoyaltyRewardController
 );
+
 router.post("/create-payment", cors(corsOptions), createPaymentController);
+
 router.get("/order-summary", cors(corsOptions), getOrderSummaryController);
+
 router.get("/locations", cors(corsOptions), getLocationsController);
 
 module.exports = router;

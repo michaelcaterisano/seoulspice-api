@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
-
 const router = require("./routes/index");
 const { Console } = require("console");
 const app = express();
@@ -19,7 +18,10 @@ app.use(
 );
 
 // logging
-if (process.env.NODE_ENV === "development") {
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.NODE_ENV === "local"
+) {
   // morgan logging stuffz
   app.use(logger("dev"));
 }

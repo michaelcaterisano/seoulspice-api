@@ -20,17 +20,17 @@ const createPaymentController = async (req, res, next) => {
       tip,
     });
 
-    const {
-      result: {
-        event: {
-          accumulatePoints: { points },
-        },
-      },
-    } = await loyaltyService.accumulateLoyaltyPoints({
+    let points = 0;
+    const { result } = await loyaltyService.accumulateLoyaltyPoints({
       phoneNumber,
       orderId,
       locationId,
     });
+
+    // doing this because api returns {} if points are not accrued
+    if (result.event) {
+      points = result.event.accumulatePoints.points;
+    }
 
     return res.json({
       success: true,
