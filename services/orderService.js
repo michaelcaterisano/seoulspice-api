@@ -1,6 +1,5 @@
 const client = require("./squareClient");
 const { ordersApi } = client;
-const chalk = require("chalk");
 
 const createOrder = async (orderInfo) => {
   try {
@@ -9,9 +8,7 @@ const createOrder = async (orderInfo) => {
     } = await ordersApi.createOrder(orderInfo);
     return order;
   } catch (error) {
-    throw new Error(
-      `Orders API Error: Failed to create order. Message: ${error.message}`
-    );
+    throw new Error(`Orders API createOrder failed. ${error}`);
   }
 };
 
@@ -25,9 +22,7 @@ const getOrderSummary = async (orderId) => {
     } = await retrieveOrder(orderId);
     return { totalMoney, totalTaxMoney, totalDiscountMoney, totalTipMoney };
   } catch (error) {
-    throw new Error(
-      `Orders API Error: Failed to get order summary. Errors: ${error.message}`
-    );
+    throw new Error(`Orders Service getOrderSummary failed. ${error}`);
   }
 };
 
@@ -38,9 +33,7 @@ const retrieveOrder = async (orderId) => {
     } = await ordersApi.retrieveOrder(orderId);
     return order;
   } catch (error) {
-    throw new Error(
-      `Orders API Error: Failed to retrieve order. Errors: ${error.result.errors}`
-    );
+    throw new Error(`Orders API retrieveOrder failed. ${error}`);
   }
 };
 

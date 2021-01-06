@@ -1,22 +1,29 @@
 const loyaltyService = require("../services/loyaltyService");
-const asyncHandler = require("express-async-handler");
 const chalk = require("chalk");
 
-const getLoyaltyAccountController = asyncHandler(async (req, res) => {
-  const { phoneNumber } = req.body;
-  const {
-    hasReward,
-    accountBalance,
-    name,
-    percentageDiscount,
-  } = await loyaltyService.getAccountRewards(phoneNumber);
-  res.json({
-    success: true,
-    hasReward,
-    accountBalance,
-    name,
-    percentageDiscount,
-  });
-});
+const getLoyaltyAccountController = async (req, res, next) => {
+  try {
+    const { phoneNumber } = req.body;
+    const rewards = await loyaltyService.getAccountRewards(phoneNumber);
+    const {
+      hasReward,
+      newAccount,
+      accountBalance,
+      name,
+      percentageDiscount,
+    } = rewards;
+
+    res.json({
+      success: true,
+      hasReward,
+      newAccount,
+      accountBalance,
+      name,
+      percentageDiscount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = getLoyaltyAccountController;

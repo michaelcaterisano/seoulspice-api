@@ -44,11 +44,14 @@ app.get("*", (req, res) => {
 // error catching
 app.use((error, req, res, next) => {
   console.error(error.stack);
-  console.log(error.message);
+  console.error(error.message);
   if (!res.status) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, error });
   } else {
-    return res.json({ success: false, message: error.message });
+    return res.json({
+      success: false,
+      error: error.message,
+    });
   }
 });
 

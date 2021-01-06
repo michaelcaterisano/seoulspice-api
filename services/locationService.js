@@ -1,6 +1,6 @@
 const client = require("./squareClient");
 const { locationsApi } = client;
-const chalk = require("chalk");
+
 const getLocations = async () => {
   try {
     const {
@@ -13,15 +13,9 @@ const getLocations = async () => {
       return acc;
     }, []);
 
-    return locationData;
+    return locations;
   } catch (error) {
-    throw new Error(
-      `Locations API error. Failed to list locations. Message: ${JSON.stringify(
-        error,
-        null,
-        2
-      )}`
-    );
+    throw error;
   }
 };
 
