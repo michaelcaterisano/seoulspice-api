@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
-var cors = require("cors");
 
 const router = require("./routes/index");
 const { Console } = require("console");
@@ -19,13 +18,15 @@ app.use(
   })
 );
 
+// logging
 if (process.env.NODE_ENV === "development") {
   // morgan logging stuffz
   app.use(logger("dev"));
 }
 
-app.use(cors());
+app.use(logger("combined"));
 
+// TODO:
 // set cookie stuff
 // set uuid
 // if cookie, rate limit
@@ -38,7 +39,7 @@ app.use("/", router);
 
 // send 404, bottom of file
 app.get("*", (req, res) => {
-  res.status(404).send("i no findy");
+  res.status(404).send();
 });
 
 // error catching
