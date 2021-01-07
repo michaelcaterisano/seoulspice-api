@@ -1,5 +1,6 @@
 node_modules/
 ecosystem.config.js
+ecosystem.local-prod.config.js
 .env
 ignore.*
 access.log

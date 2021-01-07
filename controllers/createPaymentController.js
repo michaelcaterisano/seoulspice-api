@@ -18,6 +18,7 @@ const createPaymentController = async (req, res, next) => {
       sourceId,
       orderId,
       tip,
+      locationId,
     });
 
     let points = 0;

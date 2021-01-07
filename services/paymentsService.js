@@ -2,12 +2,20 @@ const client = require("./squareClient");
 const { paymentsApi } = client;
 const { v4: uuidv4 } = require("uuid");
 
-const createPayment = async ({ amount, sourceId, orderId, tip }) => {
+const createPayment = async ({
+  amount,
+  sourceId,
+  orderId,
+  locationId,
+  tip,
+}) => {
   try {
     const {
       result: { payment },
     } = await paymentsApi.createPayment({
       sourceId,
+      locationId,
+      orderId,
       idempotencyKey: uuidv4(),
       amountMoney: {
         amount,
@@ -17,14 +25,15 @@ const createPayment = async ({ amount, sourceId, orderId, tip }) => {
         amount: tip,
         currency: "USD",
       },
-      orderId,
+      appFeeMoney: {
+        amount: 0,
+        currency: "USD",
+      },
     });
     return payment;
   } catch (error) {
     console.log(error);
-    throw new Error(
-      `Payments API createPayment failed. Error: ${error.errors[0].detail}`
-    );
+    throw new Error(`Payments API createPayment failed. Error: ${error}`);
   }
 };
 

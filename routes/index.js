@@ -11,7 +11,6 @@ const getLocationsController = require("../controllers/getLocationsController");
 
 // CORS
 const whitelist = [
-  "http://localhost:8080",
   "https://pickup.seoulspice.com",
   "https://dev-seoulspice-pickup.netlify.app",
   "https://staging-seoulspice-pickup.netlify.app",
@@ -19,7 +18,10 @@ const whitelist = [
 ];
 
 let corsOptions;
-if (process.env.NODE_ENV === "local") {
+if (
+  process.env.NODE_ENV === "local-dev" ||
+  process.env.NODE_ENV === "local-prod"
+) {
   corsOptions = {
     origin: "*",
     optionsSucessStatus: 200,
