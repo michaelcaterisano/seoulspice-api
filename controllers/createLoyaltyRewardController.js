@@ -9,12 +9,12 @@ const createLoyaltyReward = async (req, res, next) => {
       phoneNumber,
       orderId
     );
-    const { totalMoney, discounts } = await orderService.retrieveOrder(orderId);
+    const result = await orderService.retrieveOrder(orderId);
     res.json({
       success: true,
       rewardStatus: reward.status,
-      updatedOrderTotal: totalMoney.amount,
-      discount: discounts[0].appliedMoney.amount,
+      updatedOrderTotal: result.totalMoney.amount,
+      discount: result.discounts ? result.discounts[0].appliedMoney.amount : 0,
       rewardId: reward.id,
     });
   } catch (error) {

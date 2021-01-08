@@ -44,6 +44,7 @@ app.use((error, req, res, next) => {
   if (!res.status) {
     res.status(500).json({ success: false, error });
   } else {
+    logger.log({ level: "error", message: "", data: error });
     return res.json({
       success: false,
       error: error.message,

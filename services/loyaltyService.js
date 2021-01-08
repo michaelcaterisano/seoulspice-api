@@ -2,6 +2,7 @@ const client = require("./squareClient");
 const { loyaltyApi } = client;
 const { v4: uuidv4 } = require("uuid");
 const { phoneNumberIsValid } = require("../utils/utils");
+const logger = require("../config/winston");
 
 const accumulateLoyaltyPoints = async ({
   phoneNumber,
@@ -26,7 +27,8 @@ const accumulateLoyaltyPoints = async ({
     );
     return response;
   } catch (error) {
-    throw new Error(error.errors[0].detail);
+    const errorToSend = error.errors ? error.errors[0].detail : error;
+    throw new Error(errorToSend);
   }
 };
 
@@ -46,7 +48,8 @@ const createAccount = async (phoneNumber) => {
       idempotencyKey: uuidv4(),
     });
   } catch (error) {
-    throw new Error(error.errors[0].detail);
+    const errorToSend = error.errors ? error.errors[0].detail : error;
+    throw new Error(errorToSend);
   }
 };
 
@@ -64,10 +67,16 @@ const createLoyaltyReward = async (phoneNumber, orderId) => {
       },
       idempotencyKey: uuidv4(),
     });
+    logger.log({
+      level: "info",
+      message: "Loyalty reward successfully created.",
+      data: JSON.stringify(reward),
+    });
     return reward;
   } catch (error) {
+    const errorToSend = error.errors ? error.errors[0].detail : error;
     throw new Error(
-      `Loyalty Service createLoyaltyReward failed. Error: ${error.errors[0].detail}`
+      `Loyalty Service createLoyaltyReward failed. ${errorToSend}`
     );
   }
 };
@@ -93,8 +102,9 @@ const getLoyaltyAccount = async (phoneNumber) => {
     });
     return loyaltyAccounts ? loyaltyAccounts[0] : null;
   } catch (error) {
+    const errorToSend = error.errors ? error.errors[0].detail : error;
     throw new Error(
-      `Loyalty API searchLoyaltyAccounts failed. Error: ${error.errors[0].detail}`
+      `Loyalty API searchLoyaltyAccounts failed. Error: ${errorToSend}`
     );
   }
 };
@@ -106,9 +116,8 @@ const getLoyaltyProgram = async () => {
     } = await loyaltyApi.listLoyaltyPrograms();
     return programs && programs.length > 0 ? programs[0] : null; // there is only one loyalty program
   } catch (error) {
-    throw new Error(
-      `Loyalty API listLoyaltyPrograms failed. ${error.errors[0].detail}`
-    );
+    const errorToSend = error.errors ? error.errors[0].detail : error;
+    throw new Error(`Loyalty API listLoyaltyPrograms failed. ${errorToSend}`);
   }
 };
 
@@ -142,7 +151,8 @@ const getAccountRewards = async (phoneNumber) => {
       };
     }
   } catch (error) {
-    throw new Error(`Loyalty Service getAccountRewards failed. ${error}`);
+    const errorToSend = error.errors ? error.errors[0].detail : error;
+    throw new Error(`Loyalty Service getAccountRewards failed. ${errorToSend}`);
   }
 };
 
@@ -169,7 +179,7 @@ const redeemLoyaltyReward = async (rewardId, locationId) => {
     });
     return result;
   } catch (error) {
-    throw new Error(error.errors[0].detail);
+    throw new Error(error);
   }
 };
 
@@ -177,7 +187,7 @@ const deleteLoyaltyReward = async (rewardId) => {
   try {
     const { result } = await loyaltyApi.deleteLoyaltyReward(rewardId);
   } catch (error) {
-    throw new Error(error.errors[0].detail);
+    throw new Error(error);
   }
 };
 

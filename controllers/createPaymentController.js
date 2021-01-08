@@ -2,6 +2,7 @@ const paymentsService = require("../services/paymentsService");
 const orderService = require("../services/orderService");
 const loyaltyService = require("../services/loyaltyService");
 const asyncHandler = require("express-async-handler");
+const logger = require("../config/winston");
 
 const createPaymentController = async (req, res, next) => {
   try {

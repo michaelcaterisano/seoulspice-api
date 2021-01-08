@@ -31,10 +31,15 @@ const createPayment = async ({
         currency: "USD",
       },
     });
+    logger.log({
+      level: "info",
+      message: "Payment successfullly created.",
+      data: JSON.stringify(payment),
+    });
     return payment;
   } catch (error) {
-    logger.log("error", error);
-    throw new Error(`Payments API createPayment failed. Error: ${error}`);
+    const errorToSend = error.errors ? error.errors[0].detail : error;
+    throw new Error(`Payments API createPayment failed. ${errorToSend}`);
   }
 };
 

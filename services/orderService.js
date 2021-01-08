@@ -14,11 +14,6 @@ const createOrder = async (orderInfo) => {
     });
     return order;
   } catch (error) {
-    logger.log({
-      level: "error",
-      message: "ordersApi.createOrder failed.",
-      data: JSON.stringify(error),
-    });
     throw new Error(`Orders API createOrder failed. ${error}`);
   }
 };
