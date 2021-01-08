@@ -31,6 +31,19 @@ class OrderItem {
 
   _buildModifiers() {
     this._item.modifiers = [];
+    const optionalModifiers = ["Proteins", "Veggies", "Toppings", "Sauces"];
+    optionalModifiers.forEach((modifier) => {
+      if (!this._data.options.some((option) => option.cartLabel === modifier)) {
+        this._item.modifiers.push({
+          basePriceMoney: {
+            amount: 0, // because price is already included in total
+            currency: "USD",
+          },
+          name: `NO ${modifier.toUpperCase()}`,
+        });
+      }
+    });
+    console.log(this._item.modifiers);
     this._data.options.forEach((option) => {
       this._item.modifiers.push({
         basePriceMoney: {
