@@ -48,9 +48,19 @@ class OrderItem {
     });
     return `${choiceNames
       .map((choiceName) => {
-        return option.cartLabel === "Extra Proteins"
-          ? `Extra ${choiceName}`
-          : choiceName;
+        let formattedChoiceName;
+        if (option.cartLabel === "Extra Proteins") {
+          formattedChoiceName = `Extra ${choiceName}`;
+        } else if (
+          option.cartLabel === "Veggies" ||
+          option.cartLabel === "Bases" ||
+          option.cartLabel === "Toppings"
+        ) {
+          formattedChoiceName = `- ${choiceName}`;
+        } else {
+          formattedChoiceName = choiceName;
+        }
+        return formattedChoiceName;
       })
       .join("\n")}`;
   }
