@@ -1,14 +1,24 @@
 const client = require("./squareClient");
 const { ordersApi } = client;
+const logger = require("../config/winston");
 
 const createOrder = async (orderInfo) => {
   try {
     const {
       result: { order },
     } = await ordersApi.createOrder(orderInfo);
+    logger.log({
+      level: "info",
+      message: "Order successfully created",
+      data: JSON.stringify(order),
+    });
     return order;
   } catch (error) {
-    console.log(JSON.stringify(error, null, 2));
+    logger.log({
+      level: "error",
+      message: "ordersApi.createOrder failed.",
+      data: JSON.stringify(error),
+    });
     throw new Error(`Orders API createOrder failed. ${error}`);
   }
 };

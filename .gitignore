@@ -1,5 +1,7 @@
 node_modules/
+logs/
 ecosystem.config.js
+ecosystem.local-dev.config.js
 ecosystem.local-prod.config.js
 .env
 ignore.*

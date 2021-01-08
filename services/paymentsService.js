@@ -1,6 +1,7 @@
 const client = require("./squareClient");
 const { paymentsApi } = client;
 const { v4: uuidv4 } = require("uuid");
+const logger = require("../config/winston");
 
 const createPayment = async ({
   amount,
@@ -32,7 +33,7 @@ const createPayment = async ({
     });
     return payment;
   } catch (error) {
-    console.log(error);
+    logger.log("error", error);
     throw new Error(`Payments API createPayment failed. Error: ${error}`);
   }
 };

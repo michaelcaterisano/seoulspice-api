@@ -17,7 +17,8 @@
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "square": "^8.0.1",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "morgan": "^1.10.0"

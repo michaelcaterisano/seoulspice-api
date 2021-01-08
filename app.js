@@ -1,50 +1,43 @@
 const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
-const logger = require("morgan");
+const morgan = require("morgan");
+const logger = require("./config/winston");
 const router = require("./routes/index");
 const { Console } = require("console");
 const app = express();
-
 const port = process.env.PORT || 3000;
 
 // if (!module.parent) { <--- for testing
 // }
-
-app.use(
-  logger("common", {
-    stream: fs.createWriteStream("./access.log", { flags: "a" }),
-  })
-);
-
-// logging
-if (
-  process.env.NODE_ENV === "development" ||
-  process.env.NODE_ENV === "local"
-) {
-  // morgan logging stuffz
-  app.use(logger("dev"));
-}
-
-app.use(logger("combined"));
-
 // TODO:
 // set cookie stuff
 // set uuid
 // if cookie, rate limit
 
 // body parsing
+
+if (
+  process.env.NODE_ENV === "development" ||
+  process.env.NODE_ENV === "local"
+) {
+  app.use(morgan("dev"));
+}
+app.use(morgan("combined"));
+app.use(
+  morgan("common", {
+    stream: fs.createWriteStream("./logs/access.log", { flags: "a" }),
+  })
+);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 app.use("/", router);
-
-// send 404, bottom of file
 app.get("*", (req, res) => {
   res.status(404).send();
 });
 
-// error catching
+// error handling
 app.use((error, req, res, next) => {
   console.error(error.stack);
   console.error(error.message);
