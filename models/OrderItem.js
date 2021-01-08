@@ -46,7 +46,13 @@ class OrderItem {
     const choiceNames = option.choices.map((choice) => {
       return choice.qty ? `${choice.name} (${choice.qty})` : choice.name;
     });
-    return `${choiceNames.join("\n")}`;
+    return `${choiceNames
+      .map((choiceName) => {
+        return option.cartLabel === "Extra Proteins"
+          ? `Extra ${choiceName}`
+          : choiceName;
+      })
+      .join("\n")}`;
   }
 }
 
