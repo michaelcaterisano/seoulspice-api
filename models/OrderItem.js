@@ -19,7 +19,9 @@ class OrderItem {
       name: `${this._data.signature ? this._data.signature + " " : ""}${
         this._data.name
       }`,
-      note: this._data.notes ? `${this._data.notes.join(", ")}` : "",
+      note: this._data.notes
+        ? `** ${this._data.notes.map((note) => note.toUpperCase()).join(", ")}`
+        : "",
     };
 
     if (this._data.type === "entree") {
@@ -44,7 +46,7 @@ class OrderItem {
     const choiceNames = option.choices.map((choice) => {
       return choice.qty ? `${choice.name} (${choice.qty})` : choice.name;
     });
-    return `${option.cartLabel}: ${choiceNames.join(", ")}.`;
+    return `${choiceNames.join("\n")}`;
   }
 }
 
