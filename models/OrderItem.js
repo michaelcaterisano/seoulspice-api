@@ -35,8 +35,8 @@ class OrderItem {
       "Bases",
       "Proteins",
       "Veggies",
-      "Toppings",
       "Sauces",
+      "Toppings",
     ];
     optionalModifiers.forEach((modifier) => {
       // if no choices for option, send string NO {OPTION}
@@ -46,7 +46,10 @@ class OrderItem {
             amount: 0, // because price is already included in total
             currency: "USD",
           },
-          name: `NO ${modifier.toUpperCase()}`,
+          name:
+            modifier === "Veggies" || modifier === "Toppings"
+              ? `- NO ${modifier.toUpperCase()}`
+              : `NO ${modifier.toUpperCase()}`,
         });
       } else {
         const optionToAdd = this._data.options.find(
