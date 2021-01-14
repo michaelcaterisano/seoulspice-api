@@ -10,6 +10,7 @@ const { Console } = require("console");
 const app = express();
 const port = process.env.PORT || 3000;
 
+// sentry config
 Sentry.init({
   dsn:
     "https://292e0f7beb6646b7ab460f01ab15cd1d@o503252.ingest.sentry.io/5588106",
@@ -23,9 +24,10 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
+// morgan config
 if (
   process.env.NODE_ENV === "development" ||
-  process.env.NODE_ENV === "local"
+  process.env.NODE_ENV === "local-dev"
 ) {
   app.use(morgan("dev"));
 }
@@ -36,24 +38,25 @@ app.use(
   })
 );
 
+// body parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// sentry handlers
 if (process.env.NODE_ENV === "production") {
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.tracingHandler());
 }
 
+// router
 app.use("/", router);
 
-// app.get("*", (req, res) => {
-//   res.status(404).send();
-// });
+// sentry error handler
 if (process.env.NODE_ENV === "production") {
   app.use(Sentry.Handlers.errorHandler());
 }
 
-// error handling
+// catch-all error handler
 app.use((error, req, res, next) => {
   console.error(error.stack);
   console.error(error.message);
@@ -68,4 +71,5 @@ app.use((error, req, res, next) => {
   }
 });
 
+// run
 app.listen(port, () => console.log(`listening on ${port}`));
