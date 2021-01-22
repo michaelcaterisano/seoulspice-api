@@ -23,7 +23,19 @@ class OrderDiscount {
           scope: "ORDER",
         },
       ];
-    } else if (this._discount.type === "amount") {
+    } else if (this._discount.type === "fixed") {
+      this._order.discounts = [
+        {
+          uuid: uuidv4(),
+          name: this._discount.name,
+          type: "FIXED_AMOUNT",
+          amountMoney: {
+            amount: this._discount.value,
+            currency: "USD",
+          },
+          scope: "ORDER",
+        },
+      ];
     }
   }
 }
