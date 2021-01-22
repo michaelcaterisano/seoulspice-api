@@ -1,5 +1,6 @@
 const client = require("./squareClient");
 const { ordersApi } = client;
+const OrderDiscount = require("../models/OrderDiscount");
 const logger = require("../config/winston");
 
 const createOrder = async (orderInfo) => {
@@ -43,4 +44,25 @@ const retrieveOrder = async (orderId) => {
   }
 };
 
-module.exports = { createOrder, getOrderSummary, retrieveOrder };
+const discountOrder = async ({ orderId, discount }) => {
+  try {
+    // retrieve order and get info
+    const orderToUpdate = await retrieveOrder(orderId);
+    const discountedOrder = new OrderDiscount({
+      orderToUpdate,
+      discount,
+    }).getDiscountedOrder();
+    // update order
+    const {
+      result: { order },
+    } = await ordersApi.updateOrder(orderId, discountedOrder);
+    return { order };
+  } catch (error) {
+    const errorToSend = error.errors[0]
+      ? JSON.stringify(error.errors[0])
+      : error;
+    throw new Error(`Orders API discountOrder failed. ${errorToSend}`);
+  }
+};
+
+module.exports = { createOrder, getOrderSummary, retrieveOrder, discountOrder };

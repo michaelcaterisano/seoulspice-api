@@ -8,6 +8,7 @@ const createLoyaltyRewardController = require("../controllers/createLoyaltyRewar
 const createPaymentController = require("../controllers/createPaymentController");
 const getOrderSummaryController = require("../controllers/getOrderSummaryController");
 const getLocationsController = require("../controllers/getLocationsController");
+const discountCodeController = require("../controllers/discountCodeController");
 
 // CORS
 const whitelist = [
@@ -41,29 +42,27 @@ if (
 // ROUTES
 router.options("*", cors());
 
+// GET
 router.get("/health", (req, res) => {
   const origin = req.get("origin");
   res.send(`${process.env.NODE_ENV} API is running`);
 });
+router.get("/order-summary", cors(corsOptions), getOrderSummaryController);
+router.get("/locations", cors(corsOptions), getLocationsController);
 
+// POST
 router.post("/create-order", cors(corsOptions), createOrderController);
-
 router.post(
   "/get-loyalty-account",
   cors(corsOptions),
   getLoyaltyAccountController
 );
-
 router.post(
   "/create-loyalty-reward",
   cors(corsOptions),
   createLoyaltyRewardController
 );
-
 router.post("/create-payment", cors(corsOptions), createPaymentController);
-
-router.get("/order-summary", cors(corsOptions), getOrderSummaryController);
-
-router.get("/locations", cors(corsOptions), getLocationsController);
+router.post("/discount-code", cors(corsOptions), discountCodeController);
 
 module.exports = router;
