@@ -24,8 +24,16 @@ const discountCodeController = async (req, res, next) => {
       (currCode) => currCode.code === discountCode
     );
     if (discount) {
-      const result = await orderService.discountOrder({ orderId, discount });
-      res.send({ success: true, message: discount.message, result });
+      const { netAmounts } = await orderService.discountOrder({
+        orderId,
+        discount,
+      });
+      res.send({
+        success: true,
+        message: discount.message,
+        orderTotal: netAmounts.totalMoney.amount,
+        orderDiscount: netAmounts.discountMoney.amount,
+      });
     } else {
       res.send({ success: false, message: `Invalid discount code` });
     }

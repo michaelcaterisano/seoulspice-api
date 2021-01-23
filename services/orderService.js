@@ -56,7 +56,7 @@ const discountOrder = async ({ orderId, discount }) => {
     const {
       result: { order },
     } = await ordersApi.updateOrder(orderId, discountedOrder);
-    return { order };
+    return order;
   } catch (error) {
     const errorToSend = error.errors[0]
       ? JSON.stringify(error.errors[0])
