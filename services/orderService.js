@@ -56,6 +56,11 @@ const discountOrder = async ({ orderId, discount }) => {
     const {
       result: { order },
     } = await ordersApi.updateOrder(orderId, discountedOrder);
+    logger.log({
+      level: "info",
+      message: "Order successfully discounted",
+      data: JSON.stringify(order),
+    });
     return order;
   } catch (error) {
     const errorToSend = error.errors[0]
