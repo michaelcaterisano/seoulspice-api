@@ -13,7 +13,7 @@ const discountCodes = [
     name: "five dollars off",
     type: "fixed",
     value: 500, // in cents
-    message: "Order discounted $5",
+    message: "Orderzz discounted $5",
   },
 ];
 
