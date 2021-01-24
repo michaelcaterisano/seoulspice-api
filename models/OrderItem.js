@@ -19,7 +19,7 @@ class OrderItem {
       name: `${this._data.signature ? this._data.signature + " " : ""}${
         this._data.name
       }`,
-      note: this._data.notes
+      note: this._data.notes.length
         ? `** ${this._data.notes.map((note) => note.toUpperCase()).join(", ")}`
         : "",
     };
@@ -30,14 +30,20 @@ class OrderItem {
   }
 
   _buildModifiers() {
+    let optionalModifiers;
     this._item.modifiers = [];
-    const optionalModifiers = [
-      "Bases",
-      "Proteins",
-      "Veggies",
-      "Sauces",
-      "Toppings",
-    ];
+    if (this._data.name === "Korean BBQ") {
+      optionalModifiers = ["Proteins", "Sides", "Extras"];
+    } else {
+      optionalModifiers = [
+        "Bases",
+        "Proteins",
+        "Veggies",
+        "Sauces",
+        "Toppings",
+        "Extras",
+      ];
+    }
     optionalModifiers.forEach((modifier) => {
       // if no choices for option, send string NO {OPTION}
       if (!this._data.options.some((option) => option.cartLabel === modifier)) {
@@ -47,7 +53,9 @@ class OrderItem {
             currency: "USD",
           },
           name:
-            modifier === "Veggies" || modifier === "Toppings"
+            modifier === "Veggies" ||
+            modifier === "Toppings" ||
+            modifier === "Sides"
               ? `- NO ${modifier.toUpperCase()}`
               : `NO ${modifier.toUpperCase()}`,
         });
@@ -78,7 +86,8 @@ class OrderItem {
         } else if (
           option.cartLabel === "Veggies" ||
           option.cartLabel === "Bases" ||
-          option.cartLabel === "Toppings"
+          option.cartLabel === "Toppings" ||
+          option.cartLabel === "Sides"
         ) {
           formattedChoiceName = `- ${choiceName}`;
         } else {
