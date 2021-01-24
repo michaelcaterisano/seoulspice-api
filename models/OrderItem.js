@@ -16,9 +16,7 @@ class OrderItem {
         amount: this._data.price,
         currency: "USD",
       },
-      name: `${this._data.signature ? this._data.signature + " " : ""}${
-        this._data.name
-      }`,
+      name: this._getItemName(),
       note: this._data.notes.length
         ? `** ${this._data.notes.map((note) => note.toUpperCase()).join(", ")}`
         : "",
@@ -32,7 +30,7 @@ class OrderItem {
   _buildModifiers() {
     let optionalModifiers;
     this._item.modifiers = [];
-    if (this._data.name === "Korean BBQ") {
+    if (this._isKBBQ()) {
       optionalModifiers = ["Proteins", "Sides", "Extras"];
     } else {
       optionalModifiers = [
@@ -73,6 +71,21 @@ class OrderItem {
       }
     });
   }
+  _getItemName() {
+    let name;
+    if (this._isKBBQ()) {
+      if (this._data.name === "Korean BBQ Refills") {
+        name = "Korean BBQ Refills";
+      } else {
+        name = `${this._data.name} (${this._data.signature})`;
+      }
+    } else {
+      name = `${this._data.signature ? this._data.signature + " " : ""}${
+        this._data.name
+      }`;
+    }
+    return name;
+  }
 
   _getModifierName(option) {
     const choiceNames = option.choices.map((choice) => {
@@ -96,6 +109,9 @@ class OrderItem {
         return formattedChoiceName;
       })
       .join("\n")}`;
+  }
+  _isKBBQ() {
+    return this._data.name === "Korean BBQ At Home Kit" || "Korean BBQ Refills";
   }
 }
 
