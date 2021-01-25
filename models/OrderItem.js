@@ -52,7 +52,7 @@ class OrderItem {
             modifier === "Veggies" ||
             modifier === "Toppings" ||
             modifier === "Sides"
-              ? `- NO ${modifier.toUpperCase()}`
+              ? `+ NO ${modifier.toUpperCase()}`
               : `NO ${modifier.toUpperCase()}`,
         });
       } else {
@@ -87,7 +87,7 @@ class OrderItem {
         this._data.name
       }`;
     }
-    return name;
+    return name.toUpperCase();
   }
 
   _getItemNotes() {
@@ -104,7 +104,7 @@ class OrderItem {
 
   _getModifierNames(option) {
     const choiceNames = option.choices.map((choice) => {
-      return choice.qty ? `${choice.name} (${choice.qty})` : choice.name;
+      return choice.qty ? `${choice.name} x${choice.qty}` : choice.name;
     });
     return choiceNames.map((choiceName) => {
       let formattedChoiceName;
@@ -116,7 +116,7 @@ class OrderItem {
         option.cartLabel === "Toppings" ||
         option.cartLabel === "Sides"
       ) {
-        formattedChoiceName = `- ${choiceName}`;
+        formattedChoiceName = `+ ${choiceName}`;
       } else {
         formattedChoiceName = choiceName;
       }
