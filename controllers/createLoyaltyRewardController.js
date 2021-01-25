@@ -1,6 +1,5 @@
 const loyaltyService = require("../services/loyaltyService");
 const orderService = require("../services/orderService");
-const asyncHandler = require("express-async-handler");
 
 const createLoyaltyReward = async (req, res, next) => {
   try {

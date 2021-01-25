@@ -1,6 +1,4 @@
 const orderService = require("../services/orderService");
-const asyncHandler = require("express-async-handler");
-const chalk = require("chalk");
 
 const getOrderSummaryController = async (req, res, next) => {
   try {

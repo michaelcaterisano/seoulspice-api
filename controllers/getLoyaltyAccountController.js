@@ -1,5 +1,4 @@
 const loyaltyService = require("../services/loyaltyService");
-const chalk = require("chalk");
 
 const getLoyaltyAccountController = async (req, res, next) => {
   try {

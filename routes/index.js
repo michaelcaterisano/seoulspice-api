@@ -9,6 +9,7 @@ const createPaymentController = require("../controllers/createPaymentController"
 const getOrderSummaryController = require("../controllers/getOrderSummaryController");
 const getLocationsController = require("../controllers/getLocationsController");
 const discountCodeController = require("../controllers/discountCodeController");
+const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
 
 // CORS
 const whitelist = [
@@ -64,5 +65,10 @@ router.post(
 );
 router.post("/create-payment", cors(corsOptions), createPaymentController);
 router.post("/discount-code", cors(corsOptions), discountCodeController);
+router.post(
+  "/accumulate-loyalty-points",
+  cors(corsOptions),
+  accumulateLoyaltyPointsController
+);
 
 module.exports = router;
