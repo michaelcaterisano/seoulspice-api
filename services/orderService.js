@@ -2,6 +2,7 @@ const client = require("./squareClient");
 const { ordersApi } = client;
 const OrderDiscount = require("../models/OrderDiscount");
 const logger = require("../config/winston");
+const chalk = require("chalk");
 
 const createOrder = async (orderInfo) => {
   try {
@@ -15,6 +16,8 @@ const createOrder = async (orderInfo) => {
     });
     return order;
   } catch (error) {
+    // console.log(JSON.stringify(error, null, 2));
+
     throw new Error(`Orders API createOrder failed. ${error}`);
   }
 };

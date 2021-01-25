@@ -17,9 +17,7 @@ class OrderItem {
         currency: "USD",
       },
       name: this._getItemName(),
-      note: this._data.notes.length
-        ? `** ${this._data.notes.map((note) => note.toUpperCase()).join(", ")}`
-        : "",
+      note: "",
     };
 
     if (this._data.type === "entree") {
@@ -61,12 +59,15 @@ class OrderItem {
         const optionToAdd = this._data.options.find(
           (option) => option.cartLabel === modifier
         );
-        this._item.modifiers.push({
-          basePriceMoney: {
-            amount: 0, // because price is already included in total
-            currency: "USD",
-          },
-          name: this._getModifierName(optionToAdd),
+        const modifierNames = this._getModifierNames(optionToAdd);
+        modifierNames.forEach((name) => {
+          this._item.modifiers.push({
+            basePriceMoney: {
+              amount: 0, // because price is already included in total
+              currency: "USD",
+            },
+            name,
+          });
         });
       }
     });
@@ -76,8 +77,10 @@ class OrderItem {
     if (this._isKBBQ()) {
       if (this._data.name === "Korean BBQ Refills") {
         name = "Korean BBQ Refills";
-      } else {
-        name = `${this._data.name} (${this._data.signature})`;
+      } else if (this._data.signature === "Without the grill.") {
+        name = `${this._data.name} (NO GRILL)`;
+      } else if (this._data.signature === "Includes tabletop grill.") {
+        name = `${this._data.name} (WITH GRILL)`;
       }
     } else {
       name = `${this._data.signature ? this._data.signature + " " : ""}${
@@ -87,31 +90,44 @@ class OrderItem {
     return name;
   }
 
-  _getModifierName(option) {
+  _getItemNotes() {
+    let notes;
+    if (this._data.notes) {
+      notes = this._data.notes.length
+        ? `** ${this._data.notes.map((note) => note.toUpperCase()).join(", ")}`
+        : "";
+    } else {
+      notes = this._getItemNotes();
+    }
+    return notes;
+  }
+
+  _getModifierNames(option) {
     const choiceNames = option.choices.map((choice) => {
       return choice.qty ? `${choice.name} (${choice.qty})` : choice.name;
     });
-    return `${choiceNames
-      .map((choiceName) => {
-        let formattedChoiceName;
-        if (option.cartLabel === "Extra Proteins") {
-          formattedChoiceName = `Extra ${choiceName}`;
-        } else if (
-          option.cartLabel === "Veggies" ||
-          option.cartLabel === "Bases" ||
-          option.cartLabel === "Toppings" ||
-          option.cartLabel === "Sides"
-        ) {
-          formattedChoiceName = `- ${choiceName}`;
-        } else {
-          formattedChoiceName = choiceName;
-        }
-        return formattedChoiceName;
-      })
-      .join("\n")}`;
+    return choiceNames.map((choiceName) => {
+      let formattedChoiceName;
+      if (option.cartLabel === "Extra Proteins") {
+        formattedChoiceName = `Extra ${choiceName}`;
+      } else if (
+        option.cartLabel === "Veggies" ||
+        option.cartLabel === "Bases" ||
+        option.cartLabel === "Toppings" ||
+        option.cartLabel === "Sides"
+      ) {
+        formattedChoiceName = `- ${choiceName}`;
+      } else {
+        formattedChoiceName = choiceName;
+      }
+      return formattedChoiceName;
+    });
   }
   _isKBBQ() {
-    return this._data.name === "Korean BBQ At Home Kit" || "Korean BBQ Refills";
+    return (
+      this._data.name === "Korean BBQ At Home Kit" ||
+      this._data.name === "Korean BBQ Refills"
+    );
   }
 }
 
