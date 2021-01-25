@@ -27,6 +27,7 @@ const accumulateLoyaltyPoints = async ({
     );
     return response;
   } catch (error) {
+    console.log(JSON.stringify(error, null, 2));
     const errorToSend = error.errors ? error.errors[0].detail : error;
     throw new Error(errorToSend);
   }

@@ -16,8 +16,6 @@ const createOrder = async (orderInfo) => {
     });
     return order;
   } catch (error) {
-    // console.log(JSON.stringify(error, null, 2));
-
     throw new Error(`Orders API createOrder failed. ${error}`);
   }
 };
