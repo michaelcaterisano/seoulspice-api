@@ -75,15 +75,11 @@ class OrderItem {
   _getItemName() {
     let name;
     if (this._isKBBQ()) {
-      if (this._data.name === "Korean BBQ Refills") {
-        name = "Korean BBQ Refills";
-      } else if (this._data.signature === "Without the grill.") {
-        name = `${this._data.name} (NO GRILL)`;
-      } else if (this._data.signature === "Includes tabletop grill.") {
-        name = `${this._data.name} (WITH GRILL)`;
-      }
+      name = `${this._data.name} ${
+        this._data.signature ? this._data.signature : ""
+      }`;
     } else {
-      name = `${this._data.signature ? this._data.signature + " " : ""}${
+      name = `${this._data.signature ? this._data.signature : ""} ${
         this._data.name
       }`;
     }
@@ -104,7 +100,9 @@ class OrderItem {
 
   _getModifierNames(option) {
     const choiceNames = option.choices.map((choice) => {
-      return choice.qty ? `${choice.name} x${choice.qty}` : choice.name;
+      return choice.qty
+        ? `${this._getCapitalization(choice.name)} x${choice.qty}`
+        : this._getCapitalization(choice.name);
     });
     return choiceNames.map((choiceName) => {
       let formattedChoiceName;
@@ -123,9 +121,27 @@ class OrderItem {
       return formattedChoiceName;
     });
   }
+
+  _getCapitalization(choiceName) {
+    let formattedName = choiceName;
+    let lowercasedName = choiceName.toLowerCase();
+    if (
+      lowercasedName === "beef" ||
+      lowercasedName === "chicken" ||
+      lowercasedName === "spicy pork" ||
+      lowercasedName === "tofu" ||
+      lowercasedName === "uncooked beef" ||
+      lowercasedName === "uncooked chicken" ||
+      lowercasedName === "uncooked spicy pork"
+    ) {
+      formattedName = choiceName.toUpperCase();
+    }
+    return formattedName;
+  }
+
   _isKBBQ() {
     return (
-      this._data.name === "Korean BBQ At Home Kit" ||
+      this._data.name === "Korean BBQ Kit" ||
       this._data.name === "Korean BBQ Refills"
     );
   }

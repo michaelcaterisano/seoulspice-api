@@ -101,6 +101,7 @@ const getLoyaltyAccount = async (phoneNumber) => {
         ],
       },
     });
+    console.log(`LOYALTY ACCOUNT: ${JSON.stringify(loyaltyAccounts, null, 2)}`);
     return loyaltyAccounts ? loyaltyAccounts[0] : null;
   } catch (error) {
     const errorToSend = error.errors ? error.errors[0].detail : error;
