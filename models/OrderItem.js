@@ -1,3 +1,9 @@
+const { Console } = require("winston/lib/winston/transports");
+const {
+  koreanFeastFor2Modifiers,
+  koreanFeastFor4Modifiers,
+} = require("./KoreanFeastModifiers");
+
 class OrderItem {
   constructor(data) {
     this._data = data;
@@ -26,12 +32,14 @@ class OrderItem {
   }
 
   _buildModifiers() {
-    let optionalModifiers;
     this._item.modifiers = [];
     if (this._isKBBQ()) {
-      optionalModifiers = ["Proteins", "Sides", "Extras"];
+      this._buildKBBQModifiers();
+    } else if (this._isKoreanFeast()) {
+      this._buildKoreanFeastModifiers();
+      console.log(this._item.modifiers);
     } else {
-      optionalModifiers = [
+      const modifierCategories = [
         "Bases",
         "Proteins",
         "Veggies",
@@ -39,51 +47,202 @@ class OrderItem {
         "Toppings",
         "Extras",
       ];
-    }
-    optionalModifiers.forEach((modifier) => {
-      // if no choices for option, send string NO {OPTION}
-      if (!this._data.options.some((option) => option.cartLabel === modifier)) {
-        this._item.modifiers.push({
-          basePriceMoney: {
-            amount: 0, // because price is already included in total
-            currency: "USD",
-          },
-          name:
-            modifier === "Veggies" ||
-            modifier === "Toppings" ||
-            modifier === "Sides"
-              ? `+ NO ${modifier.toUpperCase()}`
-              : `NO ${modifier.toUpperCase()}`,
-        });
-      } else {
-        const optionToAdd = this._data.options.find(
-          (option) => option.cartLabel === modifier
-        );
-        const modifierNames = this._getModifierNames(optionToAdd);
-        modifierNames.forEach((name) => {
+      modifierCategories.forEach((modifier) => {
+        // if no choices for option, send string NO {OPTION}
+        if (
+          !this._data.options.some((option) => option.cartLabel === modifier)
+        ) {
           this._item.modifiers.push({
             basePriceMoney: {
               amount: 0, // because price is already included in total
               currency: "USD",
             },
-            name,
+            name:
+              modifier === "Veggies" ||
+              modifier === "Toppings" ||
+              modifier === "Sides"
+                ? `+ NO ${modifier.toUpperCase()}`
+                : `NO ${modifier.toUpperCase()}`,
           });
+        } else {
+          const optionToAdd = this._data.options.find(
+            (option) => option.cartLabel === modifier
+          );
+          const modifierNames = this._getModifierNames(optionToAdd);
+          modifierNames.forEach((name) => {
+            this._item.modifiers.push({
+              basePriceMoney: {
+                amount: 0, // because price is already included in total
+                currency: "USD",
+              },
+              name,
+            });
+          });
+        }
+      });
+    }
+  }
+
+  _buildKoreanFeastModifiers() {
+    const modifiers = [];
+    if (this._data.name === "Korean Feast For 2") {
+      this._data.options.forEach((option, index) => {
+        if (index === this._getSauceIndex()) {
+          modifiers.push("- ALL SAUCES (1 EACH)");
+        }
+        option.choices.forEach((choice) => {
+          modifiers.push(
+            koreanFeastFor2Modifiers[choice.name]
+              ? koreanFeastFor2Modifiers[choice.name]
+              : `${choice.name.toUpperCase()} x ${choice.qty}`
+          );
+        });
+      });
+      if (this._data.options.length === 1) {
+        modifiers.push("- ALL SAUCES (1 EACH)");
+      }
+    } else {
+      this._data.options.forEach((option, index) => {
+        if (index === this._getSauceIndex()) {
+          modifiers.push("- ALL SAUCES (2 EACH)");
+        }
+        option.choices.forEach((choice) => {
+          modifiers.push(
+            koreanFeastFor4Modifiers[choice.name]
+              ? koreanFeastFor4Modifiers[choice.name]
+              : `${choice.name.toUpperCase()} x ${choice.qty}`
+          );
+        });
+      });
+      if (this._data.options.length === 1) {
+        modifiers.push("- ALL SAUCES (2 EACH)");
+      }
+    }
+    modifiers.forEach((modifier) => {
+      this._item.modifiers.push({
+        basePriceMoney: {
+          amount: 0,
+          currency: "USD",
+        },
+        name: modifier,
+      });
+    });
+  }
+
+  _getSauceIndex() {
+    let sauceIndex;
+    const modifierCategories = this._data.options.map((option) => option.type);
+
+    if (!modifierCategories.includes("veggies")) {
+      if (!modifierCategories.includes("proteins")) {
+        sauceIndex = modifierCategories.indexOf("bases") + 1;
+      } else {
+        sauceIndex = modifierCategories.indexOf("proteins") + 1;
+      }
+    } else {
+      sauceIndex = modifierCategories.indexOf("veggies") + 1;
+    }
+    return sauceIndex;
+  }
+
+  _buildKBBQModifiers() {
+    let kbbqModifiers;
+
+    if (this._data.name === "Korean BBQ Kit") {
+      const defaultModifiers = [
+        "- WHITE RICE (2LB)",
+        "- RADISH (CLEAR CONT)",
+        "- KIMCHI (CLEAR CONT)",
+        "- SPROUTS (CLEAR CONT)",
+        "- KALE (CLEAR CONT)",
+        "- GARLIC CLOVES (CLEAR CONT)",
+        "- HOT SAUCE (EGG CUP)",
+        "- CREAMY SRIRACHA (EGG CUP)",
+        "- GINGER-CARROT (EGG CUP)",
+        "- SES OIL + SALT (HALF EGG CUP)",
+      ];
+      if (this._data.signature === "With Grill") {
+        defaultModifiers.unshift("- GRILL + TOP + BUTANE");
+      }
+      const selectedModifiers = this._getKBBQModifiers();
+      kbbqModifiers = defaultModifiers.concat(selectedModifiers);
+    } else {
+      kbbqModifiers = this._getKBBQModifiers();
+    }
+
+    kbbqModifiers.forEach((modifier) => {
+      this._item.modifiers.push({
+        basePriceMoney: {
+          amount: 0,
+          currency: "USD",
+        },
+        name: modifier,
+      });
+    });
+  }
+
+  _getKBBQModifiers() {
+    const selectedModifiers = [];
+    this._data.options.forEach((option) => {
+      // check for proteins
+      if (option.cartLabel === "Proteins") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(`- RAW ${choice.name.toUpperCase()} (3LB)`);
+        });
+      }
+      // check for additional items
+      else if (option.cartLabel === "Additional Items") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(this._getAdditionalItemName(choice));
+        });
+      }
+      // check for extras
+      else if (option.cartLabel === "Extras") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(
+            `- EXTRA: ${choice.name.toUpperCase()} x ${choice.qty}`
+          );
         });
       }
     });
+    return selectedModifiers;
   }
+
+  _getAdditionalItemName(choice) {
+    if (
+      choice.name === "Uncooked Beef" ||
+      choice.name === "Uncooked Chicken" ||
+      choice.name === "Uncooked Spicy Pork"
+    ) {
+      return `- EXTRA: ${choice.name.toUpperCase()} (PER LB) x ${choice.qty}`;
+    } else if (
+      choice.name === "Purple Rice" ||
+      choice.name === "White Rice" ||
+      choice.name === "Japchae Noodles"
+    ) {
+      return `- EXTRA: ${choice.name.toUpperCase()} (2 LB) x ${choice.qty}`;
+    } else if (choice.name === "Kimchi") {
+      return `- EXTRA: ${choice.name.toUpperCase()} (CLEAR CONT)`;
+    } else if (
+      choice.name === "Korean Hot Sauce" ||
+      choice.name === "Creamy Sriracha" ||
+      choice.name === "Ginger-Carrot" ||
+      choice.name === "Cilantro-Lime Ranch"
+    ) {
+      return `- EXTRA: ${choice.name.toUpperCase()} (BOTTLE)`;
+    } else if (choice.name === "Extra Butane Gas") {
+      return `- EXTRA: BUTANE GAS (CANISTER) `;
+    }
+  }
+
   _getItemName() {
     let name;
     if (this._isKBBQ()) {
-      if (this._data.name === "Korean BBQ Refills") {
-        name = "Korean BBQ Refills";
-      } else if (this._data.signature === "Without the grill.") {
-        name = `${this._data.name} (NO GRILL)`;
-      } else if (this._data.signature === "Includes tabletop grill.") {
-        name = `${this._data.name} (WITH GRILL)`;
-      }
+      name = `${this._data.name} ${
+        this._data.signature ? this._data.signature : ""
+      }`;
     } else {
-      name = `${this._data.signature ? this._data.signature + " " : ""}${
+      name = `${this._data.signature ? this._data.signature : ""} ${
         this._data.name
       }`;
     }
@@ -104,7 +263,9 @@ class OrderItem {
 
   _getModifierNames(option) {
     const choiceNames = option.choices.map((choice) => {
-      return choice.qty ? `${choice.name} x${choice.qty}` : choice.name;
+      return choice.qty
+        ? `${this._getCapitalization(choice.name)} x ${choice.qty}`
+        : this._getCapitalization(choice.name);
     });
     return choiceNames.map((choiceName) => {
       let formattedChoiceName;
@@ -123,9 +284,31 @@ class OrderItem {
       return formattedChoiceName;
     });
   }
+
+  _getCapitalization(choiceName) {
+    let formattedName = choiceName;
+    let lowercasedName = choiceName.toLowerCase();
+    if (
+      lowercasedName === "beef" ||
+      lowercasedName === "chicken" ||
+      lowercasedName === "spicy pork" ||
+      lowercasedName === "tofu"
+    ) {
+      formattedName = choiceName.toUpperCase();
+    }
+    return formattedName;
+  }
+
+  _isKoreanFeast() {
+    return (
+      this._data.name === "Korean Feast For 2" ||
+      this._data.name === "Korean Feast For 4"
+    );
+  }
+
   _isKBBQ() {
     return (
-      this._data.name === "Korean BBQ At Home Kit" ||
+      this._data.name === "Korean BBQ Kit" ||
       this._data.name === "Korean BBQ Refills"
     );
   }
