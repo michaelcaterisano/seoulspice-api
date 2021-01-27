@@ -27,7 +27,6 @@ const accumulateLoyaltyPoints = async ({
     );
     return response;
   } catch (error) {
-    console.log(JSON.stringify(error, null, 2));
     const errorToSend = error.errors ? error.errors[0].detail : error;
     throw new Error(errorToSend);
   }
@@ -101,7 +100,6 @@ const getLoyaltyAccount = async (phoneNumber) => {
         ],
       },
     });
-    console.log(`LOYALTY ACCOUNT: ${JSON.stringify(loyaltyAccounts, null, 2)}`);
     return loyaltyAccounts ? loyaltyAccounts[0] : null;
   } catch (error) {
     const errorToSend = error.errors ? error.errors[0].detail : error;

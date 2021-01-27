@@ -26,12 +26,11 @@ class OrderItem {
   }
 
   _buildModifiers() {
-    let optionalModifiers;
     this._item.modifiers = [];
     if (this._isKBBQ()) {
-      optionalModifiers = ["Proteins", "Sides", "Extras"];
+      this._buildKBBQModifiers();
     } else {
-      optionalModifiers = [
+      const modifierCategories = [
         "Bases",
         "Proteins",
         "Veggies",
@@ -39,39 +38,132 @@ class OrderItem {
         "Toppings",
         "Extras",
       ];
-    }
-    optionalModifiers.forEach((modifier) => {
-      // if no choices for option, send string NO {OPTION}
-      if (!this._data.options.some((option) => option.cartLabel === modifier)) {
-        this._item.modifiers.push({
-          basePriceMoney: {
-            amount: 0, // because price is already included in total
-            currency: "USD",
-          },
-          name:
-            modifier === "Veggies" ||
-            modifier === "Toppings" ||
-            modifier === "Sides"
-              ? `+ NO ${modifier.toUpperCase()}`
-              : `NO ${modifier.toUpperCase()}`,
-        });
-      } else {
-        const optionToAdd = this._data.options.find(
-          (option) => option.cartLabel === modifier
-        );
-        const modifierNames = this._getModifierNames(optionToAdd);
-        modifierNames.forEach((name) => {
+      modifierCategories.forEach((modifier) => {
+        // if no choices for option, send string NO {OPTION}
+        if (
+          !this._data.options.some((option) => option.cartLabel === modifier)
+        ) {
           this._item.modifiers.push({
             basePriceMoney: {
               amount: 0, // because price is already included in total
               currency: "USD",
             },
-            name,
+            name:
+              modifier === "Veggies" ||
+              modifier === "Toppings" ||
+              modifier === "Sides"
+                ? `+ NO ${modifier.toUpperCase()}`
+                : `NO ${modifier.toUpperCase()}`,
           });
+        } else {
+          const optionToAdd = this._data.options.find(
+            (option) => option.cartLabel === modifier
+          );
+          const modifierNames = this._getModifierNames(optionToAdd);
+          modifierNames.forEach((name) => {
+            this._item.modifiers.push({
+              basePriceMoney: {
+                amount: 0, // because price is already included in total
+                currency: "USD",
+              },
+              name,
+            });
+          });
+        }
+      });
+    }
+  }
+
+  _buildKBBQModifiers() {
+    let kbbqModifiers;
+
+    if (this._data.name === "Korean BBQ Kit") {
+      const kbbqDefaultModifiers = [
+        "- WHITE RICE (2LB)",
+        "- RADISH (CLEAR CONT)",
+        "- KIMCHI (CLEAR CONT)",
+        "- SPROUTS (CLEAR CONT)",
+        "- KALE (CLEAR CONT)",
+        "- GARLIC CLOVES (CLEAR CONT)",
+        "- HOT SAUCE (EGG CUP)",
+        "- CREAMY SRIRACHA (EGG CUP)",
+        "- GINGER-CARROT (EGG CUP)",
+        "- SES OIL + SALT (HALF EGG CUP)",
+      ];
+      if (this._data.signature === "With Grill") {
+        kbbqDefaultModifiers.unshift("- GRILL + TOP + BUTANE");
+      }
+      const selectedModifiers = this._getKBBQModifiers();
+      kbbqModifiers = kbbqDefaultModifiers.concat(selectedModifiers);
+    } else {
+      kbbqModifiers = this._getKBBQModifiers();
+    }
+
+    kbbqModifiers.forEach((modifier) => {
+      this._item.modifiers.push({
+        basePriceMoney: {
+          amount: 0,
+          currency: "USD",
+        },
+        name: modifier,
+      });
+    });
+  }
+
+  _getKBBQModifiers() {
+    const selectedModifiers = [];
+    this._data.options.forEach((option) => {
+      // check for proteins
+      if (option.cartLabel === "Proteins") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(`- RAW ${choice.name.toUpperCase()} (3LB)`);
+        });
+      }
+      // check for additional items
+      else if (option.cartLabel === "Additional Items") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(this._getAdditionalItemName(choice));
+        });
+      }
+      // check for extras
+      else if (option.cartLabel === "Extras") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(
+            `- EXTRA: ${choice.name.toUpperCase()} x ${choice.qty}`
+          );
         });
       }
     });
+    return selectedModifiers;
   }
+
+  _getAdditionalItemName(choice) {
+    if (
+      choice.name === "Uncooked Beef" ||
+      choice.name === "Uncooked Chicken" ||
+      choice.name === "Uncooked Spicy Pork"
+    ) {
+      return `- EXTRA: ${choice.name.toUpperCase()} (PER LB) x ${choice.qty}`;
+    } else if (
+      choice.name === "Purple Rice" ||
+      choice.name === "White Rice" ||
+      choice.name === "Japchae Noodles"
+    ) {
+      return `- EXTRA: ${choice.name.toUpperCase()} (2 LB) x ${choice.qty}`;
+    } else if (choice.name === "Kimchi") {
+      return `- EXTRA: ${choice.name.toUpperCase()} (CLEAR CONT)`;
+    } else if (
+      choice.name === "Korean Hot Sauce" ||
+      choice.name === "Creamy Sriracha" ||
+      choice.name === "Ginger-Carrot" ||
+      choice.name === "Cilantro-Lime Ranch"
+    ) {
+      return `- EXTRA: ${choice.name.toUpperCase()} (BOTTLE)`;
+    } else if (choice.name === "Extra Butane Gas") {
+      return `- EXTRA: BUTANE GAS (CANISTER) `;
+    }
+  }
+
   _getItemName() {
     let name;
     if (this._isKBBQ()) {
@@ -101,7 +193,7 @@ class OrderItem {
   _getModifierNames(option) {
     const choiceNames = option.choices.map((choice) => {
       return choice.qty
-        ? `${this._getCapitalization(choice.name)} x${choice.qty}`
+        ? `${this._getCapitalization(choice.name)} x ${choice.qty}`
         : this._getCapitalization(choice.name);
     });
     return choiceNames.map((choiceName) => {
@@ -129,10 +221,7 @@ class OrderItem {
       lowercasedName === "beef" ||
       lowercasedName === "chicken" ||
       lowercasedName === "spicy pork" ||
-      lowercasedName === "tofu" ||
-      lowercasedName === "uncooked beef" ||
-      lowercasedName === "uncooked chicken" ||
-      lowercasedName === "uncooked spicy pork"
+      lowercasedName === "tofu"
     ) {
       formattedName = choiceName.toUpperCase();
     }
