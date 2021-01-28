@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const logger = require("./config/winston");
 const router = require("./routes/index");
+const { getTimestamp } = require("./utils/utils");
 const { Console } = require("console");
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,18 +26,14 @@ Sentry.init({
 });
 
 // morgan config
-if (
-  process.env.NODE_ENV === "development" ||
-  process.env.NODE_ENV === "local-dev"
-) {
-  app.use(morgan("dev"));
-}
-app.use(morgan("combined"));
-app.use(
-  morgan("common", {
-    stream: fs.createWriteStream("./logs/access.log", { flags: "a" }),
-  })
+morgan.token("localDate", getTimestamp);
+
+morgan.format(
+  "combined",
+  ':remote-addr - :remote-user [:localDate]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
 );
+
+app.use(morgan("combined"));
 
 // body parser
 app.use(bodyParser.json());
