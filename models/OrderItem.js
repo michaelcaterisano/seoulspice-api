@@ -23,7 +23,7 @@ class OrderItem {
         currency: "USD",
       },
       name: this._getItemName(),
-      note: "",
+      note: this._getItemNotes(),
     };
 
     if (this._data.type === "entree") {
@@ -37,7 +37,6 @@ class OrderItem {
       this._buildKBBQModifiers();
     } else if (this._isKoreanFeast()) {
       this._buildKoreanFeastModifiers();
-      console.log(this._item.modifiers);
     } else {
       const modifierCategories = [
         "Bases",
@@ -256,7 +255,7 @@ class OrderItem {
         ? `** ${this._data.notes.map((note) => note.toUpperCase()).join(", ")}`
         : "";
     } else {
-      notes = this._getItemNotes();
+      notes = "";
     }
     return notes;
   }
