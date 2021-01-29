@@ -41,7 +41,9 @@ const retrieveOrder = async (orderId) => {
     } = await ordersApi.retrieveOrder(orderId);
     return order;
   } catch (error) {
-    throw new Error(`Orders API retrieveOrder failed. ${error}`);
+    throw new Error(
+      `Orders API retrieveOrder failed. ${JSON.stringify(error)}`
+    );
   }
 };
 
@@ -64,9 +66,7 @@ const discountOrder = async ({ orderId, discount }) => {
     });
     return order;
   } catch (error) {
-    const errorToSend = error.errors[0]
-      ? JSON.stringify(error.errors[0])
-      : error;
+    const errorToSend = error.errors ? JSON.stringify(error.errors[0]) : error;
     throw new Error(`Orders API discountOrder failed. ${errorToSend}`);
   }
 };
