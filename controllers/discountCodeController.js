@@ -32,6 +32,7 @@ const discountCodeController = async (req, res, next) => {
         success: true,
         message: discount.message,
         orderTotal: netAmounts.totalMoney.amount,
+        orderTax: netAmounts.taxMoney.amount,
         orderDiscount: netAmounts.discountMoney.amount,
       });
     } else {

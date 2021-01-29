@@ -13,7 +13,8 @@ const createLoyaltyReward = async (req, res, next) => {
       success: true,
       rewardStatus: reward.status,
       updatedOrderTotal: netAmounts.totalMoney.amount,
-      discount: netAmounts.discountMoney.amount,
+      orderDiscount: netAmounts.discountMoney.amount,
+      orderTax: netAmounts.taxMoney.amount,
       rewardId: reward.id,
     });
   } catch (error) {
