@@ -43,7 +43,6 @@ if (
 // ROUTES
 router.options("*", cors());
 
-// GET
 router.get("/health", (req, res) => {
   const origin = req.get("origin");
   res.send(`${process.env.NODE_ENV} API is running`);
