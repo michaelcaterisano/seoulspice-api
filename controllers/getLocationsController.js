@@ -4,8 +4,7 @@ const googleClient = new Client({});
 
 const locationController = async (req, res, next) => {
   try {
-    const { postalCode } = req.query;
-
+    const { latitude, longitude, userAddress } = req.body;
     const locations = await locationService.getLocations();
 
     const addresses = locations.map((location) => {
@@ -13,11 +12,13 @@ const locationController = async (req, res, next) => {
       return `${address.addressLine1} ${address.locality} ${address.administrativeDistrictLevel1} ${address.postalCode}`;
     });
 
+    const userPosition = userAddress ? userAddress : `${latitude},${longitude}`;
+
     const {
       data: { destination_addresses: destinations, rows },
     } = await googleClient.distancematrix({
       params: {
-        origins: [postalCode],
+        origins: [userPosition],
         destinations: addresses,
         key: process.env.GOOGLE_API_KEY,
       },
@@ -36,7 +37,8 @@ const locationController = async (req, res, next) => {
           distance: distances[index].distance.value,
         };
       })
-      .filter((destination) => destination.distance < 10000);
+      .sort((a, b) => a.distance - b.distance);
+    // .filter((destination) => destination.distance < 10000);
     res.send(addressesWithDistance);
   } catch (error) {
     next(error);
