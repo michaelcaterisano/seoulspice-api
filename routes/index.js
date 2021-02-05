@@ -43,13 +43,12 @@ if (
 // ROUTES
 router.options("*", cors());
 
-// GET
 router.get("/health", (req, res) => {
   const origin = req.get("origin");
   res.send(`${process.env.NODE_ENV} API is running`);
 });
 router.get("/order-summary", cors(corsOptions), getOrderSummaryController);
-router.get("/locations", cors(corsOptions), getLocationsController);
+router.post("/locations", cors(corsOptions), getLocationsController);
 
 // POST
 router.post("/create-order", cors(corsOptions), createOrderController);
