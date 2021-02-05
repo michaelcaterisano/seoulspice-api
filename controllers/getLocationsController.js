@@ -36,8 +36,8 @@ const locationController = async (req, res, next) => {
         return location;
       })
       .sort((a, b) => a.distance - b.distance);
-    // .filter((destination) => destination.distance < 10000);
-    res.send(locationsWithDistance);
+
+    res.send({ success: true, locations: locationsWithDistance });
   } catch (error) {
     next(error);
   }

@@ -29,7 +29,12 @@ const getLocations = async () => {
     locations.map((location) => {
       location.imageUrl = getLocationImageUrl(location);
     });
-    return locations;
+
+    const formattedLocations = locations.map((location) => {
+      const { id, name, address, imageUrl } = location;
+      return { id, name, address, imageUrl };
+    });
+    return formattedLocations;
   } catch (error) {
     throw error;
   }
