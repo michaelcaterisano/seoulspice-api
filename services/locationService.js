@@ -35,6 +35,8 @@ const getLocationTaxRate = (location) => {
     case "md westfield moco":
       taxRate = 6;
       break;
+    default:
+      taxRate = 10;
   }
   return taxRate;
 };
