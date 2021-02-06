@@ -20,6 +20,25 @@ const getLocationImageUrl = (location) => {
   return url;
 };
 
+const getLocationTaxRate = (location) => {
+  let taxRate;
+  switch (location.name.toLowerCase()) {
+    case "dc noma":
+      taxRate = 10;
+      break;
+    case "dc tenleytown":
+      taxRate = 10;
+      break;
+    case "md college park":
+      taxRate = 6;
+      break;
+    case "md westfield moco":
+      taxRate = 6;
+      break;
+  }
+  return taxRate;
+};
+
 const getLocations = async () => {
   try {
     const {
@@ -28,11 +47,12 @@ const getLocations = async () => {
 
     locations.map((location) => {
       location.imageUrl = getLocationImageUrl(location);
+      location.taxRate = getLocationTaxRate(location);
     });
 
     const formattedLocations = locations.map((location) => {
-      const { id, name, address, imageUrl } = location;
-      return { id, name, address, imageUrl };
+      const { id, name, address, imageUrl, taxRate } = location;
+      return { id, name, address, imageUrl, taxRate };
     });
     return formattedLocations;
   } catch (error) {
