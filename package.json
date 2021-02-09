@@ -21,6 +21,7 @@
     "express-async-handler": "^1.1.4",
     "express-rate-limit": "^5.2.3",
     "square": "^8.0.1",
+    "twilio": "^3.55.1",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.0"
