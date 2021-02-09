@@ -8,7 +8,7 @@ const textCustomerReceipt = ({ phoneNumber, receiptUrl }) => {
     .create({
       body: `Thank you for ordering from Seoulspice Pickup! Here's the receipt for your order: ${receiptUrl}`,
       messagingServiceSid: process.env.TWILIO_MSG_SERVICE_ID,
-      to: `+1${phoneNumber}`,
+      to: `${phoneNumber}`,
     })
     .then((message) => {
       return message;
