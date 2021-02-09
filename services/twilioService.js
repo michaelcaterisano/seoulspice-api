@@ -6,7 +6,7 @@ const client = require("twilio")(
 const textCustomerReceipt = ({ phoneNumber, receiptUrl }) => {
   client.messages
     .create({
-      body: `Thank you for ordering from Seoulspice Pickup! Here's the receipt for your order: ${receiptUrl}`,
+      body: `Thank you for ordering from Seoulspice! Here's the receipt for your order: ${receiptUrl}`,
       messagingServiceSid: process.env.TWILIO_MSG_SERVICE_ID,
       to: `${phoneNumber}`,
     })
