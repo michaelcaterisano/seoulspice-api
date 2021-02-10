@@ -150,11 +150,11 @@ class OrderItem {
     if (this._data.name === "Korean BBQ Kit") {
       const defaultModifiers = [
         "- WHITE RICE (2LB)",
-        "- RADISH (CLEAR CONT)",
-        "- KIMCHI (CLEAR CONT)",
-        "- SPROUTS (CLEAR CONT)",
-        "- KALE (CLEAR CONT)",
-        "- GARLIC CLOVES (CLEAR CONT)",
+        "- RADISH (10oz)",
+        "- KIMCHI (10oz)",
+        "- SPROUTS (10oz)",
+        "- KALE (10oz)",
+        "- GARLIC CLOVES (EGG CUP)",
         "- HOT SAUCE (EGG CUP)",
         "- CREAMY SRIRACHA (EGG CUP)",
         "- GINGER-CARROT (EGG CUP)",
@@ -199,7 +199,7 @@ class OrderItem {
       else if (option.cartLabel === "Extras") {
         option.choices.forEach((choice) => {
           selectedModifiers.push(
-            `- EXTRA: ${choice.name.toUpperCase()} x ${choice.qty}`
+            `+ ${choice.name.toUpperCase()} x ${choice.qty}`
           );
         });
       }
@@ -209,28 +209,28 @@ class OrderItem {
 
   _getAdditionalItemName(choice) {
     if (
-      choice.name === "Uncooked Beef" ||
-      choice.name === "Uncooked Chicken" ||
-      choice.name === "Uncooked Spicy Pork"
+      choice.name === "Raw Beef" ||
+      choice.name === "Raw Chicken" ||
+      choice.name === "Raw Spicy Pork"
     ) {
-      return `- EXTRA: ${choice.name.toUpperCase()} (PER LB) x ${choice.qty}`;
+      return `+ ${choice.name.toUpperCase()} (PER LB) x ${choice.qty}`;
     } else if (
       choice.name === "Purple Rice" ||
       choice.name === "White Rice" ||
-      choice.name === "Japchae Noodles"
+      choice.name === "Noodles"
     ) {
-      return `- EXTRA: ${choice.name.toUpperCase()} (2 LB) x ${choice.qty}`;
+      return `+ ${choice.name.toUpperCase()} (2 LB) x ${choice.qty}`;
     } else if (choice.name === "Kimchi") {
-      return `- EXTRA: ${choice.name.toUpperCase()} (CLEAR CONT)`;
+      return `+ ${choice.name.toUpperCase()} (10oz)`;
     } else if (
       choice.name === "Korean Hot Sauce" ||
       choice.name === "Creamy Sriracha" ||
       choice.name === "Ginger-Carrot" ||
       choice.name === "Cilantro-Lime Ranch"
     ) {
-      return `- EXTRA: ${choice.name.toUpperCase()} (BOTTLE)`;
+      return `+ ${choice.name.toUpperCase()} (BOTTLE)`;
     } else if (choice.name === "Extra Butane Gas") {
-      return `- EXTRA: BUTANE GAS (CANISTER) `;
+      return `+ BUTANE GAS (CANISTER) `;
     }
   }
 
