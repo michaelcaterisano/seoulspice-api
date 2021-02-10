@@ -15,6 +15,7 @@ const createPaymentController = async (req, res, next) => {
       success: true,
       status: payment.status,
       amount: payment.amountMoney.amount,
+      receiptUrl: payment.receiptUrl,
     });
   } catch (error) {
     next(error);

@@ -10,6 +10,7 @@ const getOrderSummaryController = require("../controllers/getOrderSummaryControl
 const getLocationsController = require("../controllers/getLocationsController");
 const discountCodeController = require("../controllers/discountCodeController");
 const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
+const sendReceiptController = require("../controllers/sendReceiptController");
 
 // CORS
 const whitelist = [
@@ -69,5 +70,6 @@ router.post(
   cors(corsOptions),
   accumulateLoyaltyPointsController
 );
+router.post("/text-receipt", cors(corsOptions), sendReceiptController);
 
 module.exports = router;
