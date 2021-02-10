@@ -1,44 +1,40 @@
-const logger = require("../config/winston");
 const client = require("./squareClient");
 const { locationsApi } = client;
 
-const getLocationImageUrl = (location) => {
-  let url;
+const getAdditionalLocationInformation = (location) => {
+  let url, taxRate, locationName, locationCity;
   switch (location.name.toLowerCase()) {
     case "dc noma":
       url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
+      taxRate = 10;
+      locationName = "Noma";
+      locationCity = "Washington, DC";
       break;
     case "dc tenleytown":
       url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/tenley_c3qjoq.jpg`;
+      taxRate = 10;
+      locationName = "Tenleytown";
+      locationCity = "Washington, DC";
       break;
     case "md college park":
       url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/umd_i06l2i.jpg`;
+      taxRate = 6;
+      locationName = "Terrapin Row";
+      locationCity = "College Park, MD";
+      break;
+    case "md westfield moco":
+      url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
+      taxRate = 6;
+      locationName = "Moco - Westfield Mall";
+      locationCity = "Bethesda, MD";
       break;
     default:
       url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
-  }
-  return url;
-};
-
-const getLocationTaxRate = (location) => {
-  let taxRate;
-  switch (location.name.toLowerCase()) {
-    case "dc noma":
-      taxRate = 10;
-      break;
-    case "dc tenleytown":
-      taxRate = 10;
-      break;
-    case "md college park":
       taxRate = 6;
-      break;
-    case "md westfield moco":
-      taxRate = 6;
-      break;
-    default:
-      taxRate = 10;
+      locationName = "Seoulspice";
+      locationCity = "Washington, DC";
   }
-  return taxRate;
+  return { url, taxRate, locationName, locationCity };
 };
 
 const getLocations = async () => {
@@ -48,13 +44,29 @@ const getLocations = async () => {
     } = await locationsApi.listLocations();
 
     locations.map((location) => {
-      location.imageUrl = getLocationImageUrl(location);
-      location.taxRate = getLocationTaxRate(location);
+      const additionalInformation = getAdditionalLocationInformation(location);
+      Object.assign(location, additionalInformation);
     });
 
     const formattedLocations = locations.map((location) => {
-      const { id, name, address, imageUrl, taxRate } = location;
-      return { id, name, address, imageUrl, taxRate };
+      const {
+        id,
+        name,
+        address,
+        imageUrl,
+        taxRate,
+        locationName,
+        locationCity,
+      } = location;
+      return {
+        id,
+        name,
+        address,
+        imageUrl,
+        taxRate,
+        locationName,
+        locationCity,
+      };
     });
     return formattedLocations;
   } catch (error) {
