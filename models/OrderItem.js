@@ -209,17 +209,19 @@ class OrderItem {
 
   _getAdditionalItemName(choice) {
     if (
-      choice.name === "Raw Beef" ||
-      choice.name === "Raw Chicken" ||
-      choice.name === "Raw Spicy Pork"
+      choice.name === "Uncooked Beef" ||
+      choice.name === "Uncooked Chicken" ||
+      choice.name === "Uncooked Spicy Pork"
     ) {
-      return `+ ${choice.name.toUpperCase()} (PER LB) x ${choice.qty}`;
-    } else if (
-      choice.name === "Purple Rice" ||
-      choice.name === "White Rice" ||
-      choice.name === "Noodles"
-    ) {
+      let newName;
+      let names = choice.name.split(" ");
+      names.splice(0, 1, "Raw");
+      newName = names.join(" ");
+      return `+ ${newName.toUpperCase()} (PER LB) x ${choice.qty}`;
+    } else if (choice.name === "Purple Rice" || choice.name === "White Rice") {
       return `+ ${choice.name.toUpperCase()} (2 LB) x ${choice.qty}`;
+    } else if (choice.name === "Japchae Noodles") {
+      return `+ NOODLES (2 LB) x ${choice.qty}`;
     } else if (choice.name === "Kimchi") {
       return `+ ${choice.name.toUpperCase()} (10oz)`;
     } else if (
