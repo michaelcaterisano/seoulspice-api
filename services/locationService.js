@@ -2,39 +2,39 @@ const client = require("./squareClient");
 const { locationsApi } = client;
 
 const getAdditionalLocationInformation = (location) => {
-  let url, taxRate, locationName, locationCity;
+  let imageUrl, taxRate, locationName, locationCity;
   switch (location.name.toLowerCase()) {
     case "dc noma":
-      url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
+      imageUrl = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
       taxRate = 10;
       locationName = "Noma";
       locationCity = "Washington, DC";
       break;
     case "dc tenleytown":
-      url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/tenley_c3qjoq.jpg`;
+      imageUrl = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/tenley_c3qjoq.jpg`;
       taxRate = 10;
       locationName = "Tenleytown";
       locationCity = "Washington, DC";
       break;
     case "md college park":
-      url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/umd_i06l2i.jpg`;
+      imageUrl = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/umd_i06l2i.jpg`;
       taxRate = 6;
       locationName = "Terrapin Row";
       locationCity = "College Park, MD";
       break;
     case "md westfield moco":
-      url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
+      imageUrl = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
       taxRate = 6;
       locationName = "Moco - Westfield Mall";
       locationCity = "Bethesda, MD";
       break;
     default:
-      url = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
+      imageUrl = `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/locations/noma_r4ry5w.jpg`;
       taxRate = 6;
       locationName = "Seoulspice";
       locationCity = "Washington, DC";
   }
-  return { url, taxRate, locationName, locationCity };
+  return { imageUrl, taxRate, locationName, locationCity };
 };
 
 const getLocations = async () => {
