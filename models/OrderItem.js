@@ -241,10 +241,6 @@ class OrderItem {
     );
   }
 
-  _isSignature() {
-    this._data.signature !== "Build Your Own";
-  }
-
   _isBuildYourOwn() {
     return this._data.signature === "Build Your Own";
   }
@@ -358,12 +354,11 @@ class OrderItem {
     return choiceNames.map((choiceName) => {
       let formattedChoiceName;
       if (option.cartLabel === "Extra Proteins") {
-        formattedChoiceName = `Extra ${choiceName}`;
+        formattedChoiceName = `EXTRA ${choiceName}`;
       } else if (
         option.cartLabel === "Veggies" ||
         option.cartLabel === "Bases" ||
         option.cartLabel === "Toppings"
-        // option.cartLabel === "Sides"
       ) {
         formattedChoiceName = `+ ${choiceName}`;
       } else {
