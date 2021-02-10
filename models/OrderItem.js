@@ -38,31 +38,43 @@ class OrderItem {
     } else if (this._isKoreanFeast()) {
       this._buildKoreanFeastModifiers();
     } else {
-      const modifierCategories = [
-        "Bases",
-        "Proteins",
-        "Veggies",
-        "Sauces",
-        "Toppings",
-        "Extras",
-      ];
+      const modifierCategories =
+        this._data.signature === "Build Your Own"
+          ? [
+              "Bases",
+              "Proteins",
+              "Extra Proteins",
+              "Veggies",
+              "Sauces",
+              "Toppings",
+              "Extras",
+            ]
+          : ["Bases", "Extra Proteins", "Extras"];
       modifierCategories.forEach((modifier) => {
         // if no choices for option, send string NO {OPTION}
         if (
           !this._data.options.some((option) => option.cartLabel === modifier)
         ) {
-          this._item.modifiers.push({
-            basePriceMoney: {
-              amount: 0, // because price is already included in total
-              currency: "USD",
-            },
-            name:
-              modifier === "Veggies" ||
-              modifier === "Toppings" ||
-              modifier === "Sides"
-                ? `+ NO ${modifier.toUpperCase()}`
-                : `NO ${modifier.toUpperCase()}`,
-          });
+          let modifierName;
+          switch (true) {
+            case modifier === "Veggies":
+              modifierName = `+ NO ${modifier.toUpperCase()}`;
+              break;
+            case modifier === "Toppings":
+              modifierName = `+ NO ${modifier.toUpperCase()}`;
+              break;
+            default:
+              modifierName = `NO ${modifier.toUpperCase()}`;
+          }
+          if (modifier !== "Extras" && modifier !== "Extra Proteins") {
+            this._item.modifiers.push({
+              basePriceMoney: {
+                amount: 0, // because price is already included in total
+                currency: "USD",
+              },
+              name: modifierName,
+            });
+          }
         } else {
           const optionToAdd = this._data.options.find(
             (option) => option.cartLabel === modifier
@@ -275,8 +287,8 @@ class OrderItem {
       } else if (
         option.cartLabel === "Veggies" ||
         option.cartLabel === "Bases" ||
-        option.cartLabel === "Toppings" ||
-        option.cartLabel === "Sides"
+        option.cartLabel === "Toppings"
+        // option.cartLabel === "Sides"
       ) {
         formattedChoiceName = `+ ${choiceName}`;
       } else {
@@ -300,6 +312,19 @@ class OrderItem {
     return formattedName;
   }
 
+  // entree functions
+  _isBowl() {
+    return this._data.name === "Bowl";
+  }
+
+  _isKorrito() {
+    return this._data.name === "Korrito";
+  }
+
+  _isKidsBowl() {
+    return this._data.name === "Kid's Bowl";
+  }
+
   _isKoreanFeast() {
     return (
       this._data.name === "Korean Feast For 2" ||
@@ -312,6 +337,14 @@ class OrderItem {
       this._data.name === "Korean BBQ Kit" ||
       this._data.name === "Korean BBQ Refills"
     );
+  }
+
+  _isSignature() {
+    this._data.signature !== "Build Your Own";
+  }
+
+  _isBuildYourOwn() {
+    return this._data.signature === "Build Your Own";
   }
 }
 
