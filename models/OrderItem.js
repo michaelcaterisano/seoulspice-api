@@ -1,4 +1,3 @@
-const { Console } = require("winston/lib/winston/transports");
 const {
   koreanFeastFor2Modifiers,
   koreanFeastFor4Modifiers,
@@ -31,55 +30,141 @@ class OrderItem {
     }
   }
 
+  /******************** MODIFIER BUILDERS ********************/
+
   _buildModifiers() {
     this._item.modifiers = [];
     if (this._isKBBQ()) {
       this._buildKBBQModifiers();
     } else if (this._isKoreanFeast()) {
       this._buildKoreanFeastModifiers();
-    } else {
-      const modifierCategories = [
-        "Bases",
-        "Proteins",
-        "Veggies",
-        "Sauces",
-        "Toppings",
-        "Extras",
-      ];
-      modifierCategories.forEach((modifier) => {
-        // if no choices for option, send string NO {OPTION}
-        if (
-          !this._data.options.some((option) => option.cartLabel === modifier)
-        ) {
+    } else if (this._isBowl()) {
+      this._buildBowlModifiers();
+    } else if (this._isKorrito()) {
+      this._buildKorritoModifiers();
+    } else if (this._isKidsBowl()) {
+      this._buildKidsBowlModifiers();
+    }
+  }
+
+  _buildEntreeModifiers(modifiers) {
+    modifiers.forEach((modifier) => {
+      // if no choices for option, send string NO {OPTION}
+      if (!this._data.options.some((option) => option.cartLabel === modifier)) {
+        let modifierName;
+        switch (true) {
+          case modifier === "Veggies":
+            modifierName = `+ NO ${modifier.toUpperCase()}`;
+            break;
+          case modifier === "Toppings":
+            modifierName = `+ NO ${modifier.toUpperCase()}`;
+            break;
+          default:
+            modifierName = `NO ${modifier.toUpperCase()}`;
+        }
+        if (modifier !== "Extras" && modifier !== "Extra Proteins") {
           this._item.modifiers.push({
             basePriceMoney: {
               amount: 0, // because price is already included in total
               currency: "USD",
             },
-            name:
-              modifier === "Veggies" ||
-              modifier === "Toppings" ||
-              modifier === "Sides"
-                ? `+ NO ${modifier.toUpperCase()}`
-                : `NO ${modifier.toUpperCase()}`,
-          });
-        } else {
-          const optionToAdd = this._data.options.find(
-            (option) => option.cartLabel === modifier
-          );
-          const modifierNames = this._getModifierNames(optionToAdd);
-          modifierNames.forEach((name) => {
-            this._item.modifiers.push({
-              basePriceMoney: {
-                amount: 0, // because price is already included in total
-                currency: "USD",
-              },
-              name,
-            });
+            name: modifierName,
           });
         }
-      });
+      } else {
+        const optionToAdd = this._data.options.find(
+          (option) => option.cartLabel === modifier
+        );
+        const modifierNames = this._getModifierNames(optionToAdd);
+        modifierNames.forEach((name) => {
+          this._item.modifiers.push({
+            basePriceMoney: {
+              amount: 0, // because price is already included in total
+              currency: "USD",
+            },
+            name,
+          });
+        });
+      }
+    });
+  }
+
+  _buildBowlModifiers() {
+    const modifiers = this._isBuildYourOwn()
+      ? [
+          "Bases",
+          "Proteins",
+          "Extra Proteins",
+          "Veggies",
+          "Sauces",
+          "Toppings",
+          "Extras",
+        ]
+      : ["Bases", "Extra Proteins", "Extras"];
+    this._buildEntreeModifiers(modifiers);
+  }
+
+  _buildKorritoModifiers() {
+    const modifiers = this._isBuildYourOwn()
+      ? [
+          "Bases",
+          "Proteins",
+          "Extra Proteins",
+          "Veggies",
+          "Sauces",
+          "Toppings",
+          "Extras",
+        ]
+      : ["Bases", "Extra Proteins", "Extras"];
+    this._buildEntreeModifiers(modifiers);
+  }
+
+  _buildKidsBowlModifiers() {
+    const modifiers = [
+      "Bases",
+      "Proteins",
+      "Veggies",
+      "Sauces",
+      "Toppings",
+      "Extras",
+    ];
+    this._buildEntreeModifiers(modifiers);
+  }
+
+  _buildKBBQModifiers() {
+    let kbbqModifiers;
+
+    if (this._data.name === "Korean BBQ Kit") {
+      const defaultModifiers = [
+        "- WHITE RICE (2LB)",
+        "- RADISH (10oz)",
+        "- KIMCHI (10oz)",
+        "- SPROUTS (10oz)",
+        "- KALE (10oz)",
+        "- GARLIC CLOVES (EGG CUP)",
+        "- HOT SAUCE (EGG CUP)",
+        "- CREAMY SRIRACHA (EGG CUP)",
+        "- GINGER-CARROT (EGG CUP)",
+        "- SES OIL + SALT (HALF EGG CUP)",
+      ];
+      if (this._data.signature === "With Grill") {
+        defaultModifiers.unshift("- GRILL + TOP + BUTANE");
+      }
+      const selectedModifiers = this._getKBBQModifiers();
+      kbbqModifiers = defaultModifiers.concat(selectedModifiers);
+    } else {
+      kbbqModifiers = this._getKBBQModifiers();
     }
+
+    kbbqModifiers.forEach((modifier) => {
+      this._item.modifiers.push({
+        basePriceMoney: {
+          amount: 0,
+          currency: "USD",
+        },
+        name: modifier,
+      });
+    });
   }
 
   _buildKoreanFeastModifiers() {
@@ -128,6 +213,40 @@ class OrderItem {
     });
   }
 
+  /******************** ENTREE BOOLEANS ********************/
+
+  _isBowl() {
+    return this._data.name === "Bowl";
+  }
+
+  _isKorrito() {
+    return this._data.name === "Korrito";
+  }
+
+  _isKidsBowl() {
+    return this._data.name === "Kid's Bowl";
+  }
+
+  _isKoreanFeast() {
+    return (
+      this._data.name === "Korean Feast For 2" ||
+      this._data.name === "Korean Feast For 4"
+    );
+  }
+
+  _isKBBQ() {
+    return (
+      this._data.name === "Korean BBQ Kit" ||
+      this._data.name === "Korean BBQ Refills"
+    );
+  }
+
+  _isBuildYourOwn() {
+    return this._data.signature === "Build Your Own";
+  }
+
+  /******************** UTILS ********************/
+
   _getSauceIndex() {
     let sauceIndex;
     const modifierCategories = this._data.options.map((option) => option.type);
@@ -142,42 +261,6 @@ class OrderItem {
       sauceIndex = modifierCategories.indexOf("veggies") + 1;
     }
     return sauceIndex;
-  }
-
-  _buildKBBQModifiers() {
-    let kbbqModifiers;
-
-    if (this._data.name === "Korean BBQ Kit") {
-      const defaultModifiers = [
-        "- WHITE RICE (2LB)",
-        "- RADISH (10oz)",
-        "- KIMCHI (10oz)",
-        "- SPROUTS (10oz)",
-        "- KALE (10oz)",
-        "- GARLIC CLOVES (EGG CUP)",
-        "- HOT SAUCE (EGG CUP)",
-        "- CREAMY SRIRACHA (EGG CUP)",
-        "- GINGER-CARROT (EGG CUP)",
-        "- SES OIL + SALT (HALF EGG CUP)",
-      ];
-      if (this._data.signature === "With Grill") {
-        defaultModifiers.unshift("- GRILL + TOP + BUTANE");
-      }
-      const selectedModifiers = this._getKBBQModifiers();
-      kbbqModifiers = defaultModifiers.concat(selectedModifiers);
-    } else {
-      kbbqModifiers = this._getKBBQModifiers();
-    }
-
-    kbbqModifiers.forEach((modifier) => {
-      this._item.modifiers.push({
-        basePriceMoney: {
-          amount: 0,
-          currency: "USD",
-        },
-        name: modifier,
-      });
-    });
   }
 
   _getKBBQModifiers() {
@@ -271,12 +354,11 @@ class OrderItem {
     return choiceNames.map((choiceName) => {
       let formattedChoiceName;
       if (option.cartLabel === "Extra Proteins") {
-        formattedChoiceName = `Extra ${choiceName}`;
+        formattedChoiceName = `EXTRA ${choiceName}`;
       } else if (
         option.cartLabel === "Veggies" ||
         option.cartLabel === "Bases" ||
-        option.cartLabel === "Toppings" ||
-        option.cartLabel === "Sides"
+        option.cartLabel === "Toppings"
       ) {
         formattedChoiceName = `+ ${choiceName}`;
       } else {
@@ -298,20 +380,6 @@ class OrderItem {
       formattedName = choiceName.toUpperCase();
     }
     return formattedName;
-  }
-
-  _isKoreanFeast() {
-    return (
-      this._data.name === "Korean Feast For 2" ||
-      this._data.name === "Korean Feast For 4"
-    );
-  }
-
-  _isKBBQ() {
-    return (
-      this._data.name === "Korean BBQ Kit" ||
-      this._data.name === "Korean BBQ Refills"
-    );
   }
 }
 
