@@ -137,10 +137,6 @@ class OrderItem {
     if (this._data.name === "Korean BBQ Kit") {
       const defaultModifiers = [
         "- WHITE RICE (2LB)",
-        "- RADISH (10oz)",
-        "- KIMCHI (10oz)",
-        "- SPROUTS (10oz)",
-        "- KALE (10oz)",
         "- GARLIC CLOVES (EGG CUP)",
         "- HOT SAUCE (EGG CUP)",
         "- CREAMY SRIRACHA (EGG CUP)",
@@ -270,6 +266,10 @@ class OrderItem {
       if (option.cartLabel === "Proteins") {
         option.choices.forEach((choice) => {
           selectedModifiers.push(`- RAW ${choice.name.toUpperCase()} (3LB)`);
+        });
+      } else if (option.cartLabel === "Veggies") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(`- ${choice.name.toUpperCase()} (10oz)`);
         });
       }
       // check for additional items
