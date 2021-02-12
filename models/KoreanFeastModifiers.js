@@ -42,4 +42,7 @@ const koreanFeastFor4Modifiers = {
   "Sesame Seeds": "- SESAME SEEDS (SAUCE CUP)",
 };
 
-module.exports = { koreanFeastFor2Modifiers, koreanFeastFor4Modifiers };
+module.exports = {
+  koreanFeastFor2Modifiers,
+  koreanFeastFor4Modifiers,
+};
