@@ -135,8 +135,9 @@ class OrderItem {
     let kbbqModifiers;
 
     if (this._data.name === "Korean BBQ Kit") {
-      const defaultModifiers = [
-        "- WHITE RICE (2LB)",
+      const defaultModifiers = [];
+      const bases = ["- WHITE RICE (2LB)"];
+      const remainingDefaults = [
         "- GARLIC CLOVES (EGG CUP)",
         "- HOT SAUCE (EGG CUP)",
         "- CREAMY SRIRACHA (EGG CUP)",
@@ -144,12 +145,20 @@ class OrderItem {
         "- SES OIL + SALT (HALF EGG CUP)",
       ];
       if (this._data.signature === "With Grill") {
-        defaultModifiers.unshift("- GRILL + TOP + BUTANE");
+        defaultModifiers.push("- GRILL + TOP + BUTANE");
       }
-      const selectedModifiers = this._getKBBQModifiers();
-      kbbqModifiers = defaultModifiers.concat(selectedModifiers);
+      const veggies = this._getKBBQVeggies();
+      const proteins = this._getKBBQProteins();
+      const additionsAndExtras = this._getKBBQAdditionsAndExtras();
+      kbbqModifiers = defaultModifiers.concat(
+        bases,
+        veggies,
+        remainingDefaults,
+        proteins,
+        additionsAndExtras
+      );
     } else {
-      kbbqModifiers = this._getKBBQModifiers();
+      kbbqModifiers = this._getKBBQAdditionsAndExtras();
     }
 
     kbbqModifiers.forEach((modifier) => {
@@ -259,21 +268,35 @@ class OrderItem {
     return sauceIndex;
   }
 
-  _getKBBQModifiers() {
+  _getKBBQVeggies() {
     const selectedModifiers = [];
     this._data.options.forEach((option) => {
-      // check for proteins
-      if (option.cartLabel === "Proteins") {
-        option.choices.forEach((choice) => {
-          selectedModifiers.push(`- RAW ${choice.name.toUpperCase()} (3LB)`);
-        });
-      } else if (option.cartLabel === "Veggies") {
+      if (option.cartLabel === "Veggies") {
         option.choices.forEach((choice) => {
           selectedModifiers.push(`- ${choice.name.toUpperCase()} (10oz)`);
         });
       }
+    });
+    return selectedModifiers;
+  }
+
+  _getKBBQProteins() {
+    const selectedModifiers = [];
+    this._data.options.forEach((option) => {
+      if (option.cartLabel === "Proteins") {
+        option.choices.forEach((choice) => {
+          selectedModifiers.push(`- RAW ${choice.name.toUpperCase()} (3LB)`);
+        });
+      }
+    });
+    return selectedModifiers;
+  }
+
+  _getKBBQAdditionsAndExtras() {
+    const selectedModifiers = [];
+    this._data.options.forEach((option) => {
       // check for additional items
-      else if (option.cartLabel === "Additional Items") {
+      if (option.cartLabel === "Additional Items") {
         option.choices.forEach((choice) => {
           selectedModifiers.push(this._getAdditionalItemName(choice));
         });
