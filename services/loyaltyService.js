@@ -25,6 +25,11 @@ const accumulateLoyaltyPoints = async ({
         locationId,
       }
     );
+    logger.log({
+      level: "info",
+      message: "Loyalty point accumulated.",
+      data: JSON.stringify(response),
+    });
     return response;
   } catch (error) {
     const errorToSend = error.errors ? error.errors[0].detail : error;
