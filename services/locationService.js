@@ -57,6 +57,7 @@ const getLocations = async () => {
         taxRate,
         locationName,
         locationCity,
+        phoneNumber,
       } = location;
       return {
         id,
@@ -66,6 +67,7 @@ const getLocations = async () => {
         taxRate,
         locationName,
         locationCity,
+        phoneNumber,
       };
     });
     return formattedLocations;
