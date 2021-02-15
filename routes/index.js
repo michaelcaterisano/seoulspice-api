@@ -15,6 +15,7 @@ const sendReceiptController = require("../controllers/sendReceiptController");
 // CORS
 const whitelist = [
   "https://pickup.seoulspice.com",
+  "http://pickup.seoulspice.com",
   "https://dev-seoulspice-pickup.netlify.app",
   "https://staging-seoulspice-pickup.netlify.app",
   "https://seoulspice-pickup.netlify.app",
