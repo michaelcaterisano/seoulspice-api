@@ -11,12 +11,13 @@ const createPaymentController = async (req, res, next) => {
       locationId,
     });
 
-    return res.json({
-      success: true,
-      status: payment.status,
-      amount: payment.amountMoney.amount,
-      receiptUrl: payment.receiptUrl,
-    });
+    // return res.json({
+    //   success: true,
+    //   status: payment.status,
+    //   amount: payment.amountMoney.amount,
+    //   receiptUrl: payment.receiptUrl,
+    // });
+    return res.json({ payment });
   } catch (error) {
     next(error);
   }
