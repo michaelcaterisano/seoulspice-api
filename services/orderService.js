@@ -9,14 +9,21 @@ const createOrder = async (orderInfo) => {
     const {
       result: { order },
     } = await ordersApi.createOrder(orderInfo);
+    const { id, netAmounts } = order;
     logger.log({
       level: "info",
-      message: "Order successfully created",
-      data: JSON.stringify(order),
+      message: "Order successfully created: ",
+      data: JSON.stringify({
+        orderId: id,
+        orderTotal: netAmounts.totalMoney.amount,
+        orderTax: netAmounts.taxMoney.amount,
+        orderTip: netAmounts.tipMoney.amount,
+        orderDiscount: netAmounts.discountMoney.amount,
+      }),
     });
     return order;
   } catch (error) {
-    throw new Error(`Orders API createOrder failed. ${error}`);
+    throw new Error(`Orders API createOrder failed. ${JSON.stringify(error)}`);
   }
 };
 
@@ -30,7 +37,9 @@ const getOrderSummary = async (orderId) => {
     } = await retrieveOrder(orderId);
     return { totalMoney, totalTaxMoney, totalDiscountMoney, totalTipMoney };
   } catch (error) {
-    throw new Error(`Orders Service getOrderSummary failed. ${error}`);
+    throw new Error(
+      `Orders Service getOrderSummary failed. ${JSON.stringify(error)}`
+    );
   }
 };
 
@@ -59,15 +68,23 @@ const discountOrder = async ({ orderId, discount }) => {
     const {
       result: { order },
     } = await ordersApi.updateOrder(orderId, discountedOrder);
+    const { id, netAmounts } = order;
     logger.log({
       level: "info",
       message: "Order successfully discounted",
-      data: JSON.stringify(order),
+      data: JSON.stringify({
+        orderId: id,
+        orderTotal: netAmounts.totalMoney.amount,
+        orderTax: netAmounts.taxMoney.amount,
+        orderTip: netAmounts.tipMoney.amount,
+        orderDiscount: netAmounts.discountMoney.amount,
+      }),
     });
     return order;
   } catch (error) {
-    const errorToSend = error.errors ? JSON.stringify(error.errors[0]) : error;
-    throw new Error(`Orders API discountOrder failed. ${errorToSend}`);
+    throw new Error(
+      `Orders API discountOrder failed. ${JSON.stringify(error)}`
+    );
   }
 };
 

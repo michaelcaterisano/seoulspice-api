@@ -11,14 +11,27 @@ const createPayment = async ({
   tip,
 }) => {
   try {
+    // use pay order when amount and tip are $0
     if (amount == 0 && tip == 0) {
-      console.log("PAYMENT IS ZERO");
       const {
         result: { order },
       } = await ordersApi.payOrder(orderId, {
         idempotencyKey: uuidv4(),
       });
+      const { id, netAmounts } = order;
+      logger.log({
+        level: "info",
+        message: "PayOrder success, FREE ORDER: ",
+        data: JSON.stringify({
+          orderId: id,
+          orderTotal: netAmounts.totalMoney.amount,
+          orderTax: netAmounts.taxMoney.amount,
+          orderTip: netAmounts.tipMoney.amount,
+          orderDiscount: netAmounts.discountMoney.amount,
+        }),
+      });
       return order;
+      // use createpayment for other orders
     } else {
       const {
         result: { payment },
@@ -43,7 +56,12 @@ const createPayment = async ({
       logger.log({
         level: "info",
         message: "Payment successfullly created.",
-        data: JSON.stringify(payment),
+        data: JSON.stringify({
+          id: payment.id,
+          status: payment.status,
+          amount: payment.amountMoney.amount,
+          receiptUrl: payment.receiptUrl,
+        }),
       });
       return payment;
     }

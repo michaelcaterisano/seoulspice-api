@@ -8,13 +8,6 @@ const discountCodes = [
     value: "100",
     message: "Order discounted 10%",
   },
-  {
-    code: "SEOULSPICE5",
-    name: "five dollars off",
-    type: "fixed",
-    value: 500, // in cents
-    message: "Order discounted $5",
-  },
 ];
 
 const discountCodeController = async (req, res, next) => {
