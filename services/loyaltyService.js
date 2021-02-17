@@ -191,6 +191,11 @@ const redeemLoyaltyReward = async (rewardId, locationId) => {
 const deleteLoyaltyReward = async (rewardId) => {
   try {
     const { result } = await loyaltyApi.deleteLoyaltyReward(rewardId);
+    logger.log({
+      level: "info",
+      message: "Loyalty reward deleted.",
+      data: JSON.stringify(result),
+    });
     return result;
   } catch (error) {
     throw new Error(JSON.stringify(error));
