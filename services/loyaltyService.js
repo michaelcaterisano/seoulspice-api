@@ -156,8 +156,9 @@ const getAccountRewards = async (phoneNumber) => {
       };
     }
   } catch (error) {
-    const errorToSend = error.errors ? error.errors[0].detail : error;
-    throw new Error(`Loyalty Service getAccountRewards failed. ${errorToSend}`);
+    throw new Error(
+      `Loyalty Service getAccountRewards failed. Phone: ${phoneNumber}, ${JSON.stringify}`
+    );
   }
 };
 
