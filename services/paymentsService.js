@@ -11,12 +11,14 @@ const createPayment = async ({
   tip,
 }) => {
   try {
-    if (amount == 0) {
+    if (amount == 0 && tip == 0) {
       console.log("PAYMENT IS ZERO");
-      const payOrderResponse = ordersApi.payOrder(orderId, {
+      const {
+        result: { order },
+      } = await ordersApi.payOrder(orderId, {
         idempotencyKey: uuidv4(),
       });
-      return payOrderResponse;
+      return order;
     } else {
       const {
         result: { payment },
