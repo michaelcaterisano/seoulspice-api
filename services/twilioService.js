@@ -19,7 +19,7 @@ const textCustomerReceipt = ({ phoneNumber, receiptUrl }) => {
       logger.log({
         level: "info",
         message: "Receipt sent. ",
-        data: JSON.stringify(message),
+        data: `receipt: ${receiptUrl}`,
       });
       return message;
     })
