@@ -1,3 +1,5 @@
+const logger = require("../config/winston");
+
 const client = require("twilio")(
   process.env.TWILIO_SID,
   process.env.TWILIO_AUTH_TOKEN
@@ -14,6 +16,11 @@ const textCustomerReceipt = ({ phoneNumber, receiptUrl }) => {
       to: `${phoneNumber}`,
     })
     .then((message) => {
+      logger.log({
+        level: "info",
+        message: "Receipt sent. ",
+        data: JSON.stringify(message),
+      });
       return message;
     })
     .catch((error) => {
