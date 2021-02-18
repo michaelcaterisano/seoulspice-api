@@ -18,11 +18,7 @@ const transport = new transports.DailyRotateFile({
   maxFiles: "14d",
   level: "info",
   timestamp: true,
-  format: combine(
-    timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-    json(),
-    myFormat
-  ),
+  format: combine(timestamp({ format: getTimestamp }), json(), myFormat),
 });
 
 const options = {
