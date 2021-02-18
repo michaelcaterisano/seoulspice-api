@@ -16,11 +16,16 @@ const transport = new transports.DailyRotateFile({
   zippedArchive: true,
   maxSize: "20m",
   maxFiles: "14d",
+  level: "info",
+  timestamp: true,
+  format: combine(
+    timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    json(),
+    myFormat
+  ),
 });
 
 const options = {
-  level: "info",
-  format: combine(timestamp({ format: getTimestamp() }), json(), myFormat),
   transports: [transport],
 };
 
