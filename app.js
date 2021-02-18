@@ -34,7 +34,7 @@ morgan.token("localDate", getTimestamp);
 
 morgan.format(
   "combined",
-  ':remote-addr - :remote-user [:localDate]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
+  "[:localDate] :method :url :status :res[content-length] :user-agent :remote-addr"
 );
 
 app.use(morgan("combined"));
