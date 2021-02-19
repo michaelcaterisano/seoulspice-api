@@ -68,12 +68,14 @@ if (process.env.NODE_ENV === "production") {
 
 // catch-all error handler
 app.use((error, req, res, next) => {
-  console.error(error.stack);
-  console.error(error.message);
   if (!res.status) {
     res.status(500).json({ success: false, error });
   } else {
-    logger.log({ level: "error", message: "", data: error });
+    logger.log({
+      level: "error",
+      message: error.message,
+      data: error.stack,
+    });
     return res.json({
       success: false,
       error: error.message,

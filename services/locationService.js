@@ -72,7 +72,7 @@ const getLocations = async () => {
     });
     return formattedLocations;
   } catch (error) {
-    throw error;
+    throw new Error(`getLocations failed: ${JSON.stringify(error)}`);
   }
 };
 

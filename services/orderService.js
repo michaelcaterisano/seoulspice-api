@@ -12,14 +12,14 @@ const createOrder = async (orderInfo) => {
     const { id, netAmounts } = order;
     logger.log({
       level: "info",
-      message: "Order successfully created: ",
-      data: JSON.stringify({
+      message: "Order successfully created",
+      data: {
         orderId: id,
         orderTotal: netAmounts.totalMoney.amount,
         orderTax: netAmounts.taxMoney.amount,
         orderTip: netAmounts.tipMoney.amount,
         orderDiscount: netAmounts.discountMoney.amount,
-      }),
+      },
     });
     return order;
   } catch (error) {
