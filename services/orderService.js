@@ -13,17 +13,11 @@ const createOrder = async (orderInfo) => {
     logger.log({
       level: "info",
       message: "Order successfully created",
-      data: {
-        orderId: id,
-        orderTotal: netAmounts.totalMoney.amount,
-        orderTax: netAmounts.taxMoney.amount,
-        orderTip: netAmounts.tipMoney.amount,
-        orderDiscount: netAmounts.discountMoney.amount,
-      },
+      data: order,
     });
     return order;
   } catch (error) {
-    throw new Error(`Orders API createOrder failed. ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
@@ -37,9 +31,7 @@ const getOrderSummary = async (orderId) => {
     } = await retrieveOrder(orderId);
     return { totalMoney, totalTaxMoney, totalDiscountMoney, totalTipMoney };
   } catch (error) {
-    throw new Error(
-      `Orders Service getOrderSummary failed. ${JSON.stringify(error)}`
-    );
+    throw error;
   }
 };
 
@@ -50,9 +42,7 @@ const retrieveOrder = async (orderId) => {
     } = await ordersApi.retrieveOrder(orderId);
     return order;
   } catch (error) {
-    throw new Error(
-      `Orders API retrieveOrder failed. ${JSON.stringify(error)}`
-    );
+    throw error;
   }
 };
 
@@ -72,19 +62,11 @@ const discountOrder = async ({ orderId, discount }) => {
     logger.log({
       level: "info",
       message: "Order successfully discounted",
-      data: JSON.stringify({
-        orderId: id,
-        orderTotal: netAmounts.totalMoney.amount,
-        orderTax: netAmounts.taxMoney.amount,
-        orderTip: netAmounts.tipMoney.amount,
-        orderDiscount: netAmounts.discountMoney.amount,
-      }),
+      data: order,
     });
     return order;
   } catch (error) {
-    throw new Error(
-      `Orders API discountOrder failed. ${JSON.stringify(error)}`
-    );
+    throw error;
   }
 };
 

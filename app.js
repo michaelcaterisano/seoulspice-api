@@ -74,7 +74,7 @@ app.use((error, req, res, next) => {
     logger.log({
       level: "error",
       message: error.message,
-      data: error.stack,
+      data: error,
     });
     return res.json({
       success: false,
