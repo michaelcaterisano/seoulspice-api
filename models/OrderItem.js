@@ -350,6 +350,8 @@ class OrderItem {
       name = `${this._data.name} ${
         this._data.signature ? this._data.signature : ""
       }`;
+    } else if (this._data.name === "$6 Signature Sundays") {
+      name = `${this._data.signature} BOWL`;
     } else {
       name = `${this._data.signature ? this._data.signature : ""} ${
         this._data.name
