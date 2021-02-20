@@ -221,7 +221,9 @@ class OrderItem {
   /******************** ENTREE BOOLEANS ********************/
 
   _isBowl() {
-    return this._data.name === "Bowl";
+    return (
+      this._data.name === "Bowl" || this._data.name === "$6 Signature Sundays"
+    );
   }
 
   _isKorrito() {
