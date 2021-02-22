@@ -26,7 +26,7 @@ const logger = new createLogger(options);
 logger.add(
   new DatadogWinston({
     apiKey: process.env.DATADOG_API_KEY,
-    hostname: "api",
+    hostname: process.env.DATADOG_APP_ID,
     service: "express",
     ddsource: "nodejs",
     ddtags: "api",
