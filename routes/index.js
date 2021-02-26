@@ -3,6 +3,7 @@ const router = express.Router();
 var cors = require("cors");
 const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
+const dbService = require("../services/dbService");
 
 const getLoyaltyAccountController = require("../controllers/getLoyaltyAccountController");
 const createOrderController = require("../controllers/createOrderController");
@@ -14,6 +15,8 @@ const getLocationsController = require("../controllers/getLocationsController");
 const discountCodeController = require("../controllers/discountCodeController");
 const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
 const sendReceiptController = require("../controllers/sendReceiptController");
+const addIngredientController = require("../controllers/addIngredientController");
+const getLocationIngredientsController = require("../controllers/getLocationIngredientsController");
 
 <<<<<<< HEAD
 // CORS config
@@ -74,6 +77,37 @@ router.get("/health", (req, res) => {
 //MENU
 router.get("/menu-test", cors(corsOptions), jwtCheck, (req, res) =>
   res.send({ success: true, message: "ok" })
+);
+router.post("/add-ingredient", cors(corsOptions), addIngredientController);
+router.get(
+  "/location-ingredients",
+  cors(corsOptions),
+  getLocationIngredientsController
+);
+router.post("/add-location", cors(corsOptions), async (req, res, next) => {
+  try {
+    const location = await dbService.addLocation(req.body);
+    res.send(location);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post(
+  "/ingredient-out-of-stock",
+  cors(corsOptions),
+  async (req, res, next) => {
+    const { name, locationId } = req.body;
+    try {
+      const ingredient = await dbService.setIngredientOutOfStock(
+        name,
+        locationId
+      );
+      res.send(ingredient);
+    } catch (error) {
+      next(error);
+    }
+  }
 );
 
 // LOCATIONS
