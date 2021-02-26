@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 var cors = require("cors");
+const jwt = require("express-jwt");
+const jwks = require("jwks-rsa");
 
 const getLoyaltyAccountController = require("../controllers/getLoyaltyAccountController");
 const createOrderController = require("../controllers/createOrderController");
@@ -13,9 +15,27 @@ const discountCodeController = require("../controllers/discountCodeController");
 const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
 const sendReceiptController = require("../controllers/sendReceiptController");
 
+<<<<<<< HEAD
 // CORS config
 let corsOptions;
 const allowedUrls = [
+=======
+// JWT
+const jwtCheck = jwt({
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: process.env.AUTH0_JWKS_URI,
+  }),
+  audience: process.env.AUTH0_AUDIENCE,
+  issuer: process.env.AUTH0_ISSUER,
+  algorithms: ["RS256"],
+});
+
+// CORS
+const whitelist = [
+>>>>>>> 9a8073c... add menu route and jwt check
   "https://pickup.seoulspice.com",
   "http://pickup.seoulspice.com",
   "https://dev-seoulspice-pickup.netlify.app",
@@ -50,6 +70,11 @@ router.get("/health", (req, res) => {
   const origin = req.get("origin");
   res.send(`${process.env.NODE_ENV} API is running`);
 });
+
+//MENU
+router.get("/menu-test", cors(corsOptions), jwtCheck, (req, res) =>
+  res.send({ success: true, message: "ok" })
+);
 
 // LOCATIONS
 router.post("/locations", cors(corsOptions), getLocationsController);
