@@ -32,11 +32,7 @@ const accumulateLoyaltyPoints = async ({
     });
     return response;
   } catch (error) {
-    throw new Error(
-      `phoneNumber: ${phoneNumber}, orderId: ${orderId}, locationId: ${locationId}, accumulateLoyalty: ${JSON.stringify(
-        error
-      )}`
-    );
+    throw error;
   }
 };
 
@@ -56,7 +52,7 @@ const createAccount = async (phoneNumber) => {
       idempotencyKey: uuidv4(),
     });
   } catch (error) {
-    throw new Error(`createAccount: ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
@@ -81,7 +77,7 @@ const createLoyaltyReward = async (phoneNumber, orderId) => {
     });
     return reward;
   } catch (error) {
-    throw new Error(`createLoyaltyReward: ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
@@ -106,7 +102,7 @@ const getLoyaltyAccount = async (phoneNumber) => {
     });
     return loyaltyAccounts ? loyaltyAccounts[0] : null;
   } catch (error) {
-    throw new Error(`getLoyaltyAccount: ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
@@ -117,7 +113,7 @@ const getLoyaltyProgram = async () => {
     } = await loyaltyApi.listLoyaltyPrograms();
     return programs && programs.length > 0 ? programs[0] : null; // there is only one loyalty program
   } catch (error) {
-    throw new Error(`getLoyaltyProgram: ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
@@ -151,7 +147,7 @@ const getAccountRewards = async (phoneNumber) => {
       };
     }
   } catch (error) {
-    throw new Error(`getAccountRewards: ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
@@ -178,7 +174,7 @@ const redeemLoyaltyReward = async (rewardId, locationId) => {
     });
     return result;
   } catch (error) {
-    throw new Error(`redeemLoyaltyReward: ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
@@ -192,7 +188,7 @@ const deleteLoyaltyReward = async (rewardId) => {
     });
     return result;
   } catch (error) {
-    throw new Error(`deleteLoyaltyReward: ${JSON.stringify(error)}`);
+    throw error;
   }
 };
 
