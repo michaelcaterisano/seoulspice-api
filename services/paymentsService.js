@@ -66,8 +66,7 @@ const createPayment = async ({
       return payment;
     }
   } catch (error) {
-    const errorToSend = error.errors ? error.errors[0].detail : error;
-    throw new Error(`Payments API createPayment failed. ${errorToSend}`);
+    throw error;
   }
 };
 

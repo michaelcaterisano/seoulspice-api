@@ -78,7 +78,7 @@ app.use((error, req, res, next) => {
     });
     return res.json({
       success: false,
-      error: error.message,
+      error: error,
     });
   }
 });
