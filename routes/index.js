@@ -13,16 +13,15 @@ const discountCodeController = require("../controllers/discountCodeController");
 const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
 const sendReceiptController = require("../controllers/sendReceiptController");
 
-// CORS
-const whitelist = [
+// CORS config
+let corsOptions;
+const allowedUrls = [
   "https://pickup.seoulspice.com",
   "http://pickup.seoulspice.com",
   "https://dev-seoulspice-pickup.netlify.app",
   "https://staging-seoulspice-pickup.netlify.app",
   "https://seoulspice-pickup.netlify.app",
 ];
-
-let corsOptions;
 if (
   process.env.NODE_ENV === "local-dev" ||
   process.env.NODE_ENV === "local-prod"
@@ -34,7 +33,7 @@ if (
 } else {
   corsOptions = {
     origin: (origin, callback) => {
-      if (whitelist.indexOf(origin) !== -1) {
+      if (allowedUrls.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
@@ -43,7 +42,10 @@ if (
   };
 }
 
+// OPTIONS
 router.options("*", cors());
+
+// HEALTH
 router.get("/health", (req, res) => {
   const origin = req.get("origin");
   res.send(`${process.env.NODE_ENV} API is running`);
