@@ -2,10 +2,10 @@ const orderService = require("../services/orderService");
 
 const discountCodes = [
   {
-    code: "asjkdhf0q82ahsdf",
+    code: process.env.DISCOUNT_CODE,
     name: "app launch promotion",
     type: "percentage",
-    value: "100",
+    value: "0",
     message: "Order discounted 10%",
   },
 ];
