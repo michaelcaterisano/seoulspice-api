@@ -33,10 +33,19 @@ const addLocation = async (data) => {
 //   }
 // };
 
-const getLocationIngredients = async (location) => {
+const getIngredients = async () => {
   try {
     const ingredients = ingredientModel.find({});
     return ingredients;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getLocations = async () => {
+  try {
+    const locations = locationModel.find({});
+    return locations;
   } catch (error) {
     throw error;
   }
@@ -57,6 +66,7 @@ const setIngredientOutOfStock = async (ingredientName, locationId) => {
 module.exports = {
   addIngredient,
   addLocation,
-  getLocationIngredients,
+  getIngredients,
+  getLocations,
   setIngredientOutOfStock,
 };

@@ -3,7 +3,6 @@ const router = express.Router();
 var cors = require("cors");
 const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
-const dbService = require("../services/dbService");
 
 const getLoyaltyAccountController = require("../controllers/getLoyaltyAccountController");
 const createOrderController = require("../controllers/createOrderController");
@@ -15,14 +14,8 @@ const getLocationsController = require("../controllers/getLocationsController");
 const discountCodeController = require("../controllers/discountCodeController");
 const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
 const sendReceiptController = require("../controllers/sendReceiptController");
-const addIngredientController = require("../controllers/addIngredientController");
-const getLocationIngredientsController = require("../controllers/getLocationIngredientsController");
-
-<<<<<<< HEAD
-// CORS config
-let corsOptions;
-const allowedUrls = [
-=======
+const dbGetIngredientsController = require("../controllers/dbGetIngredientsController");
+const dbGetLocationsController = require("../controllers/dbGetLocationsController");
 // JWT
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
@@ -36,9 +29,9 @@ const jwtCheck = jwt({
   algorithms: ["RS256"],
 });
 
-// CORS
-const whitelist = [
->>>>>>> 9a8073c... add menu route and jwt check
+// CORS config
+let corsOptions;
+const allowedUrls = [
   "https://pickup.seoulspice.com",
   "http://pickup.seoulspice.com",
   "https://dev-seoulspice-pickup.netlify.app",
@@ -78,37 +71,15 @@ router.get("/health", (req, res) => {
 router.get("/menu-test", cors(corsOptions), jwtCheck, (req, res) =>
   res.send({ success: true, message: "ok" })
 );
-router.post("/add-ingredient", cors(corsOptions), addIngredientController);
-router.get(
-  "/location-ingredients",
-  cors(corsOptions),
-  getLocationIngredientsController
-);
-router.post("/add-location", cors(corsOptions), async (req, res, next) => {
-  try {
-    const location = await dbService.addLocation(req.body);
-    res.send(location);
-  } catch (error) {
-    next(error);
-  }
-});
 
-router.post(
-  "/ingredient-out-of-stock",
+router.get(
+  "/ingredients",
   cors(corsOptions),
-  async (req, res, next) => {
-    const { name, locationId } = req.body;
-    try {
-      const ingredient = await dbService.setIngredientOutOfStock(
-        name,
-        locationId
-      );
-      res.send(ingredient);
-    } catch (error) {
-      next(error);
-    }
-  }
+  jwtCheck,
+  dbGetIngredientsController
 );
+
+router.get("/locations", cors(corsOptions), jwtCheck, dbGetLocationsController);
 
 // LOCATIONS
 router.post("/locations", cors(corsOptions), getLocationsController);
