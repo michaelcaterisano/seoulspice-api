@@ -14,6 +14,9 @@ const getLocationsController = require("../controllers/getLocationsController");
 const discountCodeController = require("../controllers/discountCodeController");
 const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
 const sendReceiptController = require("../controllers/sendReceiptController");
+
+//db controllers
+const dbGetMenuController = require("../controllers/dbGetMenuController");
 const dbGetIngredientsController = require("../controllers/dbGetIngredientsController");
 const dbGetLocationsController = require("../controllers/dbGetLocationsController");
 const dbSetIngredientsOutOfStockController = require("../controllers/dbSetIngredientOutOfStockController");
@@ -72,6 +75,8 @@ router.get("/health", (req, res) => {
 router.get("/menu-test", cors(corsOptions), jwtCheck, (req, res) =>
   res.send({ success: true, message: "ok" })
 );
+
+router.get("/menu", cors(corsOptions), dbGetMenuController);
 
 router.get(
   "/ingredients",

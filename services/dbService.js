@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const url = process.env.MONGODB_URL;
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
+});
 const ingredientModel = require("../models/ingredient");
 const locationModel = require("../models/location");
 
@@ -26,7 +31,7 @@ const addLocation = async (data) => {
 
 const getIngredients = async () => {
   try {
-    const ingredients = ingredientModel.find({});
+    const ingredients = await ingredientModel.find({});
     return ingredients;
   } catch (error) {
     throw error;
@@ -35,8 +40,25 @@ const getIngredients = async () => {
 
 const getLocations = async () => {
   try {
-    const locations = locationModel.find({});
+    const locations = await locationModel.find({});
     return locations;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getOutOfStockAtLocation = async (locationId) => {
+  try {
+    const ingredients = await getIngredients();
+    const location = await locationModel
+      .findOne({ squareId: locationId })
+      .exec();
+
+    const outOfStock = ingredients
+      .filter((ingredient) => ingredient.outOfStockAt.includes(location._id))
+      .map((ingredient) => ingredient.name);
+
+    return outOfStock;
   } catch (error) {
     throw error;
   }
@@ -72,4 +94,5 @@ module.exports = {
   getIngredients,
   getLocations,
   setIngredientsOutOfStock,
+  getOutOfStockAtLocation,
 };
