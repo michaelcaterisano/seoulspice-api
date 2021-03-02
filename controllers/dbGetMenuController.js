@@ -7,7 +7,7 @@ const dbGetMenuController = async (req, res, next) => {
     const { locationId } = req.query;
     const outOfStock = await dbService.getOutOfStockAtLocation(locationId);
     const filteredMenu = filterMenu(menu, outOfStock);
-    res.json({ outOfStock, menuData: filteredMenu });
+    res.json({ success: true, outOfStock, menuData: filteredMenu });
   } catch (error) {
     next(error);
   }
