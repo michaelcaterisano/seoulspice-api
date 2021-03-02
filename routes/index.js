@@ -16,6 +16,7 @@ const accumulateLoyaltyPointsController = require("../controllers/accumulateLoya
 const sendReceiptController = require("../controllers/sendReceiptController");
 const dbGetIngredientsController = require("../controllers/dbGetIngredientsController");
 const dbGetLocationsController = require("../controllers/dbGetLocationsController");
+const dbSetIngredientsOutOfStockController = require("../controllers/dbSetIngredientOutOfStockController");
 // JWT
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
@@ -77,6 +78,13 @@ router.get(
   cors(corsOptions),
   jwtCheck,
   dbGetIngredientsController
+);
+
+router.post(
+  "/ingredients-out-of-stock",
+  cors(corsOptions),
+  jwtCheck,
+  dbSetIngredientsOutOfStockController
 );
 
 router.get("/locations", cors(corsOptions), jwtCheck, dbGetLocationsController);

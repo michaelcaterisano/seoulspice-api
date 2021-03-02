@@ -24,15 +24,6 @@ const addLocation = async (data) => {
   }
 };
 
-// const getIngredient = async (ingredientId) => {
-//   try {
-//     const ingredient = ingredientModel.find({ _id: ingredientId });
-//     return ingredient;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
 const getIngredients = async () => {
   try {
     const ingredients = ingredientModel.find({});
@@ -51,13 +42,25 @@ const getLocations = async () => {
   }
 };
 
-const setIngredientOutOfStock = async (ingredientName, locationId) => {
+const setIngredientsOutOfStock = async ({ ingredients, locationId }) => {
   try {
-    const ingredient = await ingredientModel.findOneAndUpdate(
-      { name: ingredientName },
-      { $addToSet: { locations: locationId } }
+    const results = await Promise.all(
+      ingredients.map(async (ingredient) => {
+        if (ingredient.outOfStock) {
+          await ingredientModel.findOneAndUpdate(
+            { name: ingredient.name },
+            { $addToSet: { outOfStockAt: locationId } }
+          );
+        } else {
+          await ingredientModel.findOneAndUpdate(
+            { name: ingredient.name },
+            { $pull: { outOfStockAt: locationId } }
+          );
+        }
+        return ingredient;
+      })
     );
-    return ingredient;
+    return results;
   } catch (error) {
     throw error;
   }
@@ -68,5 +71,5 @@ module.exports = {
   addLocation,
   getIngredients,
   getLocations,
-  setIngredientOutOfStock,
+  setIngredientsOutOfStock,
 };
