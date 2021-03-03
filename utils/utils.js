@@ -10,27 +10,25 @@ const getTimestamp = () => {
 };
 
 const filterByTag = (arr, ...tags) => {
-  if (!tags.length) {
-    return arr;
-  }
-  return arr.filter((item) => {
-    if (item.choices) {
-      item.choices = item.choices.filter((choice) =>
-        choice.tags.length
-          ? choice.tags.some((tag) => !tags.includes(tag))
-            ? choice
-            : null
-          : choice
-      );
-      return item;
-    } else {
-      return item.tags.length
-        ? item.tags.some((tag) => !tags.includes(tag))
-          ? item
-          : null
-        : item;
-    }
-  });
+  return arr
+    .filter(
+      (item) =>
+        !item.tags ||
+        !item.tags.length ||
+        item.tags.some((tag) => !tags.includes(tag))
+    )
+    .map((item) => {
+      if (item.choices) {
+        return {
+          ...item,
+          choices: item.choices.filter(
+            (choice) =>
+              !choice.tags.length ||
+              choice.tags.some((tag) => !tags.includes(tag))
+          ),
+        };
+      } else return item;
+    });
 };
 
 const filterMenu = (menuData, outOfStock) => {
