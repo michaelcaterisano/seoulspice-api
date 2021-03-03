@@ -4,9 +4,10 @@ const { filterMenu } = require("../utils/utils");
 
 const dbGetMenuController = async (req, res, next) => {
   try {
+    let menuData = Object.assign({}, menu);
     const { locationId } = req.query;
     const outOfStock = await dbService.getOutOfStockAtLocation(locationId);
-    const filteredMenu = filterMenu(menu, outOfStock);
+    const filteredMenu = filterMenu(menuData, outOfStock);
     res.json({ success: true, outOfStock, menuData: filteredMenu });
   } catch (error) {
     next(error);
