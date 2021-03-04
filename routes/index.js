@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 var cors = require("cors");
+const jwt = require("express-jwt");
+const jwks = require("jwks-rsa");
 
 const getLoyaltyAccountController = require("../controllers/getLoyaltyAccountController");
 const createOrderController = require("../controllers/createOrderController");
@@ -12,6 +14,24 @@ const getLocationsController = require("../controllers/getLocationsController");
 const discountCodeController = require("../controllers/discountCodeController");
 const accumulateLoyaltyPointsController = require("../controllers/accumulateLoyaltyPointsController");
 const sendReceiptController = require("../controllers/sendReceiptController");
+
+//db controllers
+const dbGetMenuController = require("../controllers/dbGetMenuController");
+const dbGetIngredientsController = require("../controllers/dbGetIngredientsController");
+const dbGetLocationsController = require("../controllers/dbGetLocationsController");
+const dbSetIngredientsOutOfStockController = require("../controllers/dbSetIngredientOutOfStockController");
+// JWT
+const jwtCheck = jwt({
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: process.env.AUTH0_JWKS_URI,
+  }),
+  audience: process.env.AUTH0_AUDIENCE,
+  issuer: process.env.AUTH0_ISSUER,
+  algorithms: ["RS256"],
+});
 
 // CORS config
 let corsOptions;
@@ -50,6 +70,29 @@ router.get("/health", (req, res) => {
   const origin = req.get("origin");
   res.send(`${process.env.NODE_ENV} API is running`);
 });
+
+//MENU
+router.get("/menu-test", cors(corsOptions), jwtCheck, (req, res) =>
+  res.send({ success: true, message: "ok" })
+);
+
+router.get("/menu", cors(corsOptions), dbGetMenuController);
+
+router.get(
+  "/ingredients",
+  cors(corsOptions),
+  jwtCheck,
+  dbGetIngredientsController
+);
+
+router.post(
+  "/ingredients-out-of-stock",
+  cors(corsOptions),
+  jwtCheck,
+  dbSetIngredientsOutOfStockController
+);
+
+router.get("/locations", cors(corsOptions), jwtCheck, dbGetLocationsController);
 
 // LOCATIONS
 router.post("/locations", cors(corsOptions), getLocationsController);
