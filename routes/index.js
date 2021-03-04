@@ -41,6 +41,7 @@ const allowedUrls = [
   "https://dev-seoulspice-pickup.netlify.app",
   "https://staging-seoulspice-pickup.netlify.app",
   "https://seoulspice-pickup.netlify.app",
+  "https://seoulspice-menu.netlify.app",
 ];
 if (
   process.env.NODE_ENV === "local-dev" ||
