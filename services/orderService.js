@@ -2,7 +2,6 @@ const client = require("./squareClient");
 const { ordersApi } = client;
 const OrderDiscount = require("../models/OrderDiscount");
 const logger = require("../config/winston");
-const chalk = require("chalk");
 
 const createOrder = async (orderInfo) => {
   try {
@@ -10,11 +9,6 @@ const createOrder = async (orderInfo) => {
       result: { order },
     } = await ordersApi.createOrder(orderInfo);
     const { id, netAmounts } = order;
-    logger.log({
-      level: "info",
-      message: "Order successfully created",
-      data: order,
-    });
     return order;
   } catch (error) {
     throw error;
