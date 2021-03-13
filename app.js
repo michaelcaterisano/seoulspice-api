@@ -41,6 +41,10 @@ app.use((error, req, res, next) => {
     logger.log({
       level: "error",
       message: error.message,
+      stack: error.stack,
+      method: req.method,
+      url: req.originalUrl,
+      ip: req.ip,
       data: error,
     });
     return res.json({
