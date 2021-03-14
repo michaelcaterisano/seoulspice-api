@@ -1,5 +1,6 @@
 const locationService = require("../services/locationService");
 const { Client } = require("@googlemaps/google-maps-services-js");
+const logger = require("../config/winston");
 const googleClient = new Client({});
 
 const locationController = async (req, res, next) => {
@@ -39,6 +40,12 @@ const locationController = async (req, res, next) => {
 
     res.send({ success: true, locations: locationsWithDistance });
   } catch (error) {
+    logger.log({
+      level: "error",
+      error: error,
+      googleResponse: rows,
+      request: req,
+    });
     next(error);
   }
 };
