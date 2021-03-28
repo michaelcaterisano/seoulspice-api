@@ -23,7 +23,7 @@
     "express-jwt": "^6.0.0",
     "express-rate-limit": "^5.2.6",
     "jwks-rsa": "^1.12.3",
-    "mongoose": "^5.11.18",
+    "mongoose": "^5.11.15",
     "square": "^8.1.1",
     "twilio": "^3.57.0",
     "uuid": "^8.3.2",
