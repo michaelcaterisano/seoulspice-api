@@ -6,6 +6,7 @@ ecosystem.local-prod.config.js
 .env
 ignore.*
 access.log
+discountcodes.js
 
 
 

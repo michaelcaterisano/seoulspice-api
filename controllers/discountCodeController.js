@@ -1,14 +1,5 @@
 const orderService = require("../services/orderService");
-
-const discountCodes = [
-  {
-    code: process.env.DISCOUNT_CODE,
-    name: "app launch promotion",
-    type: "percentage",
-    value: "0",
-    message: "Order discounted 10%",
-  },
-];
+const discountCodes = require("../discountcodes");
 
 const discountCodeController = async (req, res, next) => {
   try {
