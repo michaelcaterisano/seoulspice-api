@@ -56,6 +56,7 @@ const discountOrder = async ({ orderId, discount }) => {
     logger.log({
       level: "info",
       message: "Order successfully discounted",
+      discountName: discount.name,
       data: order,
     });
     return order;
