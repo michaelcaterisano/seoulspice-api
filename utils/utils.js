@@ -36,6 +36,13 @@ const filterMenu = (menuData, outOfStock) => {
   Object.keys(menuData).forEach((key) => {
     filteredMenu[key] = filterByTag(menuData[key], ...outOfStock);
   });
+
+  // remove desserts from categories if all out of stock
+  if (!filteredMenu.desserts.length) {
+    filteredMenu.categories = filteredMenu.categories.filter(
+      (item) => item.name !== "Desserts"
+    );
+  }
   return filteredMenu;
 };
 
