@@ -55,6 +55,20 @@ const menuData = {
       price: 600,
       tags: [],
     },
+    {
+      name: "Drinks",
+      description: "Drinks",
+      imageUrl: `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/drinks/bubly_ey1sn0.jpg`,
+      price: 0,
+      tags: [],
+    },
+    {
+      name: "Desserts",
+      description: "Desserts",
+      imageUrl: `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/desserts/cookie_adwep1.jpg`,
+      price: 0,
+      tags: [],
+    },
   ],
   signatures: [
     {
