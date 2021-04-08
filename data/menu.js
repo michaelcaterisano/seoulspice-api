@@ -57,14 +57,14 @@ const menuData = {
     },
     {
       name: "Drinks",
-      description: "Drinks",
+      description: null,
       imageUrl: `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/drinks/bubly_ey1sn0.jpg`,
       price: 0,
       tags: [],
     },
     {
       name: "Desserts",
-      description: "Desserts",
+      description: null,
       imageUrl: `https://res.cloudinary.com/seoulspice/image/upload/c_scale,w_300,f_auto,q_auto/seoulspice/desserts/cookie_adwep1.jpg`,
       price: 0,
       tags: [],
