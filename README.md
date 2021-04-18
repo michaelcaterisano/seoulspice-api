@@ -1,18 +1,32 @@
 # Seoulspice Pickup API
 
-This is the repository for the backend API for [pickup.seoulspice.com](https://pickup.seoulspice.com), a custom online ordering app for Seoulspice Restaurant ([seoulspice.com](https://www.seoulspice.com)). This was built primariliy between December 2020 and February 2020, and is still under active development.
+### Setup Prerequisites
 
-Seoulspice uses Square to process their online orders. The API's main responsibility is to proxy requests from the [client application](https://github.com/michaelcaterisano/seoulspice-pickup-app) to Square's API.
+- Install git if you don't have it already. The link below describes several ways to do this.
 
-Specific functionality includes:
+  https://git-scm.com/download/mac
 
-- Processing orders
-- Processing payments
-- Managing customer loyalty points
-- Getting user location and returning nearby restaurant locations
-- Texting users payment receipts (using Twilio)
+- Optional: Install nvm. This makes it easy to install multiple versions of node and switch between them.
+  https://github.com/nvm-sh/nvm
 
-Future Features/Improvements include:
+- Install node if you don't have it already. I'm using node version 14. You can use nvm to install node, or install it directly from the node website:
+  https://nodejs.org/en/download/
 
-- Endpoints to allow marking ingredients out of stock per location and dynamically updating menu data sent to client
-- Manage menu data entirely on back end, allowing restaurant managers to change menu
+### Server setup
+
+- Install PM2. This is a process manager which you'll need to run the Express app. In the terminal, type: `npm i -g pm2` to install it globally.
+
+- Fork the server repo, which will make a copy of it in your github account. `https://github.com/michaelcaterisano/seoulspice-api`
+
+- Clone the repo locally
+- git clone `https://github.com/{YOUR-ACCOUNT-HERE}/seoulspice-api.git
+
+- In the root folder of the repo, run `npm install` to install node modules.
+
+- Create `ecosystem.local-dev.config.js` and `ecosystem.local-prod.config.js` files at the project root. I'll send you environment variables to copy into these files.
+
+- Create a file called `discountcodes.js` in the root directory. I'll send you the appropriate file contents for this file.
+
+- Start the server in development mode by typing `pm2 start ecosystem.local-dev.config.js`. An instance of the server should now be running locally on port 3002.
+
+- Type `pm2 start ecosystem.local-prod.config.js` to run an instance of the server with production variables. Another instance of the server should now be running on port 3001.
